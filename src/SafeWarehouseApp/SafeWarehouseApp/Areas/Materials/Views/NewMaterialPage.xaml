@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SafeWarehouseApp.Areas.Materials.Views.NewMaterialPage"
+             Shell.PresentationMode="ModalAnimated"
+             Title="Nieuw Materiaal"
+             xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
+             ios:Page.UseSafeArea="true">
+    <ContentPage.Content>
+        <StackLayout Spacing="15" Padding="15">
+            <StackLayout>
+                <Label Text="Naam" FontSize="Medium" />
+                <Entry Text="{Binding Name, Mode=TwoWay}" FontSize="Medium" ReturnCommand="{Binding SaveCommand}" />
+            </StackLayout>
+            
+            <StackLayout>
+                <Label Text="Leverancier" FontSize="Medium" />
+                <Picker x:Name="SupplierPicker"
+                        Title="Selecteer een leverancier"
+                        ItemsSource="{Binding Suppliers}"
+                        ItemDisplayBinding="{Binding Name}"
+                        SelectedItem="{Binding SelectedSupplier}" />
+            </StackLayout>
+            
+            <StackLayout Orientation="Horizontal">
+                <Button Text="Annuleren" Command="{Binding CancelCommand}" HorizontalOptions="FillAndExpand"></Button>
+                <Button Text="Opslaan" Command="{Binding SaveCommand}" HorizontalOptions="FillAndExpand"></Button>
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+    
+</ContentPage>

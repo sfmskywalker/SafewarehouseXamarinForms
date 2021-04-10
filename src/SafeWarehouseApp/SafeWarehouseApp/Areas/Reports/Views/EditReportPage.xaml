@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
+            xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+            xmlns:views="clr-namespace:SafeWarehouseApp.Areas.Reports.Views;assembly=SafeWarehouseApp"
+            x:Class="SafeWarehouseApp.Areas.Reports.Views.EditReportPage"
+            xmlns:android="clr-namespace:Xamarin.Forms.PlatformConfiguration.AndroidSpecific;assembly=Xamarin.Forms.Core"
+            android:TabbedPage.IsSwipePagingEnabled="False"
+            Title="Rapport">
+    <views:EditReportLocationsPage Title="Plattegrond" BindingContext="{Binding EditReportLocationsViewModel}"/>
+    <views:EditReportMetadataPage Title="Metadata" BindingContext="{Binding EditReportMetadataViewModel}"/>
+</TabbedPage>

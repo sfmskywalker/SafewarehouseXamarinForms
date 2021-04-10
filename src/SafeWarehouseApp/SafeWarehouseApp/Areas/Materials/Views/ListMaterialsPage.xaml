@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SafeWarehouseApp.Areas.Materials.Views.ListMaterialsPage"
+             Title="{Binding Title}"
+             xmlns:model="clr-namespace:SafeWarehouseApp.Models"
+             xmlns:behaviors="clr-namespace:SafeWarehouseApp.Behaviors;assembly=SafeWarehouseApp"
+             xmlns:converters="clr-namespace:SafeWarehouseApp.Converters;assembly=SafeWarehouseApp"
+             xmlns:viewModels="clr-namespace:SafeWarehouseApp.Areas.Materials.ViewModels;assembly=SafeWarehouseApp"
+             x:Name="BrowseDamageTypesPage">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:ItemTappedEventArgsToSelectedItemConverter x:Key="TappedItemConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Nieuw" Command="{Binding AddItemCommand}" />
+    </ContentPage.ToolbarItems>
+    <RefreshView x:DataType="viewModels:ListMaterialsViewModel" Command="{Binding LoadItemsCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
+        <ListView x:Name="MyListView" 
+                  ItemsSource="{Binding FilteredGroups}" 
+                  SelectionMode="None" 
+                  IsGroupingEnabled="True"
+                  GroupDisplayBinding="{Binding Key.Name}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextCell Text="{Binding Name}" x:DataType="model:Material">
+                        <TextCell.ContextActions>
+                            <MenuItem Command="{Binding Path=BindingContext.DeleteItemCommand, Source={x:Reference Name=MyListView}}" CommandParameter="{Binding .}" Text="Verwijderen" IsDestructive="True" />
+                        </TextCell.ContextActions>
+                    </TextCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            <ListView.Behaviors>
+                <behaviors:EventToCommandBehavior EventName="ItemTapped" Command="{Binding ItemSelected}" Converter="{StaticResource TappedItemConverter}" />
+            </ListView.Behaviors>
+        </ListView>
+    </RefreshView>
+</ContentPage>

@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SafeWarehouseApp.Areas.Customers.Views.EditCustomerPage"
+             Title="{Binding Title}">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Rapporten" Command="{Binding ManageReportsCommand}" />
+    </ContentPage.ToolbarItems>
+    <ContentPage.Content>
+        <StackLayout Spacing="15" Padding="15">
+            <StackLayout>
+                <Label Text="Bedrijfsnaam" FontSize="Medium" />
+                <Entry Text="{Binding CompanyName, Mode=TwoWay}" FontSize="Medium" />
+            </StackLayout>
+            <StackLayout>
+                <Label Text="Naam Contactpersoon" FontSize="Medium" />
+                <Entry Text="{Binding ContactName, Mode=TwoWay}" FontSize="Medium" />
+            </StackLayout>
+            <StackLayout>
+                <Label Text="E-mail" FontSize="Medium" />
+                <Entry Text="{Binding Email, Mode=TwoWay}" FontSize="Medium" Keyboard="Email" />
+            </StackLayout>
+            <StackLayout>
+                <Label Text="Woonplaats" FontSize="Medium" />
+                <Entry Text="{Binding City, Mode=TwoWay}" FontSize="Medium" />
+            </StackLayout>
+            <StackLayout>
+                <Label Text="Adres" FontSize="Medium" />
+                <Entry Text="{Binding Address, Mode=TwoWay}" FontSize="Medium" />
+            </StackLayout>
+            <StackLayout>
+                <Label Text="Leveranciers" FontSize="Medium" Margin="0, 0, 0, 0" />
+                <ListView ItemsSource="{Binding Suppliers}" Margin="10, 20, 0, 0">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <SwitchCell Text="{Binding Item.Name}" On="{Binding IsSelected}" />
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <Button Text="Annuleren" Command="{Binding CancelCommand}" HorizontalOptions="FillAndExpand" />
+                <Button Text="Opslaan" Command="{Binding SaveCommand}" HorizontalOptions="FillAndExpand" />
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+
+</ContentPage>

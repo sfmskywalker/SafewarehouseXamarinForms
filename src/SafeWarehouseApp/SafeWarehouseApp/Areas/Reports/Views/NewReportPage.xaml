@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SafeWarehouseApp.Areas.Reports.Views.NewReportPage"
+             Shell.PresentationMode="ModalAnimated"
+             Title="Nieuw Rapport"
+             xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
+             ios:Page.UseSafeArea="true">
+    <ContentPage.Content>
+        <StackLayout Spacing="15" Padding="15">
+            <StackLayout>
+                <Label Text="Klant" FontSize="Medium" />
+                <Picker x:Name="CustomerPicker"
+                        Title="Selecteer een klant"
+                        ItemsSource="{Binding Customers}"
+                        ItemDisplayBinding="{Binding CompanyName}"
+                        SelectedItem="{Binding SelectedCustomer}" />
+            </StackLayout>
+            
+            <StackLayout Orientation="Horizontal">
+                <Button Text="Maak Foto" Command="{Binding TakePictureCommand}" HorizontalOptions="FillAndExpand" ></Button>
+                <Button Text="Selecteer Foto" Command="{Binding SelectPictureCommand}" HorizontalOptions="FillAndExpand"></Button>
+            </StackLayout>
+            
+        </StackLayout>
+    </ContentPage.Content>
+    
+</ContentPage>

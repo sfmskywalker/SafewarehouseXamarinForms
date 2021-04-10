@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SafeWarehouseApp.Areas.Reports.Views.EditReportLocationsPage"
+             xmlns:skia="clr-namespace:SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms"
+             xmlns:touch="clr-namespace:SafeWarehouseApp.Touch;assembly=SafeWarehouseApp"
+             Title="Locations">
+    <Grid>
+        <Image Source="{Binding SchematicImagePath}" Aspect="AspectFill" />
+        <skia:SKCanvasView x:Name="CanvasView" PaintSurface="OnCanvasViewPaintSurface" />
+        <Grid.Effects>
+            <touch:TouchEffect Capture="True" TouchAction="OnTouchEffectAction" />
+        </Grid.Effects>
+    </Grid>
+</ContentPage>

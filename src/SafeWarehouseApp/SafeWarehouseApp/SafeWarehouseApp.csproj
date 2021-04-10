@@ -1,0 +1,143 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.4" />
+    <PackageReference Include="SkiaSharp.Views.Forms" Version="2.80.2" />
+    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2012" />  
+    <PackageReference Include="Xamarin.Essentials" Version="1.6.1" />
+    <PackageReference Include="Z.EntityFramework.Plus.EFCore" Version="5.1.25" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Areas\Suppliers\Views\ListSuppliersPage.xaml.cs">
+      <DependentUpon>ListDamageTypesPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Areas\Suppliers\Views\ListDamageTypesPage.xaml.cs">
+      <DependentUpon>ListDamageTypesPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Areas\Suppliers\Views\EditSupplierPage.xaml.cs">
+      <DependentUpon>EditDamageTypePage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Areas\Suppliers\Views\EditDamageTypePage.xaml.cs">
+      <DependentUpon>EditDamageTypePage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Areas\Suppliers\Views\NewSupplierPage.xaml.cs">
+      <DependentUpon>NewDamageTypePage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Areas\Suppliers\Views\NewDamageTypePage.xaml.cs">
+      <DependentUpon>NewDamageTypePage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Areas\Materials\Views\ListMaterialsPage.xaml.cs">
+      <DependentUpon>ListDamageTypesPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Areas\Materials\Views\ListDamageTypesPage.xaml.cs">
+      <DependentUpon>ListDamageTypesPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Areas\Materials\Views\EditMaterialPage.xaml.cs">
+      <DependentUpon>EditDamageTypePage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Areas\Materials\Views\EditDamageTypePage.xaml.cs">
+      <DependentUpon>EditDamageTypePage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Areas\Materials\Views\NewMaterialPage.xaml.cs">
+      <DependentUpon>NewDamageTypePage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Areas\Materials\Views\NewDamageTypePage.xaml.cs">
+      <DependentUpon>NewDamageTypePage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Areas\Customers\Views\ListCustomersPage.xaml.cs">
+      <DependentUpon>ListSuppliersPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Areas\Customers\Views\EditCustomerPage.xaml.cs">
+      <DependentUpon>EditSupplierPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Areas\Customers\Views\NewCustomerPage.xaml.cs">
+      <DependentUpon>NewSupplierPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Areas\Customers\Views\ListSuppliersPage.xaml.cs">
+      <DependentUpon>ListSuppliersPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Areas\Customers\Views\EditSupplierPage.xaml.cs">
+      <DependentUpon>EditSupplierPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Areas\Customers\Views\NewSupplierPage.xaml.cs">
+      <DependentUpon>NewSupplierPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Areas\Reports\Views\ListSuppliersPage.xaml.cs">
+      <DependentUpon>ListSuppliersPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Areas\Reports\Views\EditSupplierPage.xaml.cs">
+      <DependentUpon>EditSupplierPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Areas\Reports\Views\NewSupplierPage.xaml.cs">
+      <DependentUpon>NewSupplierPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Areas\Reports\Views\ListReportsPage.xaml.cs">
+      <DependentUpon>ListMaterialsPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Areas\Reports\Views\EditReportPage.xaml.cs">
+      <DependentUpon>EditMaterialPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Areas\Reports\Views\NewReportPage.xaml.cs">
+      <DependentUpon>NewMaterialPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Areas\Reports\Views\ListMaterialsPage.xaml.cs">
+      <DependentUpon>ListMaterialsPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Areas\Reports\Views\EditMaterialPage.xaml.cs">
+      <DependentUpon>EditMaterialPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Areas\Reports\Views\NewMaterialPage.xaml.cs">
+      <DependentUpon>NewMaterialPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Areas\Reports\Views\EditReportLocationsPage.xaml.cs">
+      <DependentUpon>EditReportLocationsPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Areas\Reports\Views\EditReportMetadataPage.xaml.cs">
+      <DependentUpon>EditReportMetadata.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Areas\Reports\Views\EditLocationPage.xaml.cs">
+      <DependentUpon>EditLocationPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  
+</Project>

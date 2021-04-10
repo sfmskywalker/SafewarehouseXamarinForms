@@ -1,15 +1,53 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
+
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SafeWarehouseApp.Areas.Reports.Views.EditLocationPage"
              Shell.PresentationMode="ModalAnimated"
              Title="Locatie"
              xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
+             xmlns:converters="clr-namespace:SafeWarehouseApp.Converters;assembly=SafeWarehouseApp"
+             xmlns:behaviors="clr-namespace:SafeWarehouseApp.Behaviors;assembly=SafeWarehouseApp"
+             xmlns:viewModels="clr-namespace:SafeWarehouseApp.Areas.Reports.ViewModels;assembly=SafeWarehouseApp"
              ios:Page.UseSafeArea="true">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:ItemTappedEventArgsToSelectedItemConverter x:Key="TappedItemConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <ContentPage.Content>
         <StackLayout Spacing="15" Padding="15">
-            
+            <StackLayout>
+                <Label Text="Beschrijving" FontSize="Medium" />
+                <Entry Text="{Binding Description, Mode=TwoWay}" FontSize="Medium" />
+            </StackLayout>
+            <StackLayout>
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="Schades" FontSize="Medium"  />
+                    <Button Text="Schade Toevoegen" Command="{Binding AddDamageCommand}" HorizontalOptions="EndAndExpand" />
+                </StackLayout>
+                <ListView x:Name="DamagesListView"
+                          ItemsSource="{Binding Damages}"
+                          SelectionMode="None">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextCell Text="{Binding Title}">
+                                <TextCell.ContextActions>
+                                    <MenuItem Command="{Binding Path=BindingContext.DeleteDamageCommand, Source={x:Reference Name=DamagesListView}}" CommandParameter="{Binding .}" Text="Verwijderen" IsDestructive="True" />
+                                </TextCell.ContextActions>
+                            </TextCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                    <ListView.Behaviors>
+                        <behaviors:EventToCommandBehavior EventName="ItemTapped" Command="{Binding DamageSelected}" Converter="{StaticResource TappedItemConverter}" />
+                    </ListView.Behaviors>
+                </ListView>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <Button Text="Annuleren" Command="{Binding CancelCommand}" HorizontalOptions="FillAndExpand" />
+                <Button Text="Opslaan" Command="{Binding SaveCommand}" HorizontalOptions="FillAndExpand" />
+            </StackLayout>
         </StackLayout>
     </ContentPage.Content>
-    
+
 </ContentPage>

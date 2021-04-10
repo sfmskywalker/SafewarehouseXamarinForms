@@ -138,6 +138,10 @@
       <DependentUpon>EditLocationPage.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Areas\Reports\Views\EditDamagePage.xaml.cs">
+      <DependentUpon>EditDamagePage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   
 </Project>

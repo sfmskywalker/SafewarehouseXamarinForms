@@ -23,14 +23,15 @@ namespace SafeWarehouseApp.Areas.Reports.Views
         private readonly IDictionary<long, SKPoint> _touchDictionary = new Dictionary<long, SKPoint>();
         private DateTime _lastTap = DateTime.MinValue;
         private long? _lastTouchId;
-        private readonly EditReportLocationsViewModel _viewModel;
         private Location? _tappedLocation;
 
         public EditReportLocationsPage()
         {
             InitializeComponent();
-            BindingContext = _viewModel = new EditReportLocationsViewModel();
         }
+
+        private EditReportLocationsViewModel ViewModel => (EditReportLocationsViewModel)BindingContext;
+        
 
         void OnCanvasViewPaintSurface(object sender, SKPaintSurfaceEventArgs args)
         {
@@ -40,11 +41,11 @@ namespace SafeWarehouseApp.Areas.Reports.Views
 
             canvas.Clear();
 
-            var report =_viewModel.Report;
+            var report = ViewModel.Report;
 
             if (report == null!)
                 return;
-            
+
             var reportLocations = report.Locations;
 
             foreach (var location in reportLocations)
@@ -57,7 +58,7 @@ namespace SafeWarehouseApp.Areas.Reports.Views
                     TextSize = 100,
                     StrokeWidth = 5
                 };
-                canvas.DrawCircle(location.Left, location.Top, location.Radius, paint);    
+                canvas.DrawCircle(location.Left, location.Top, location.Radius, paint);
             }
         }
 
@@ -74,22 +75,23 @@ namespace SafeWarehouseApp.Areas.Reports.Views
                     var elapsed = now - _lastTap;
                     var touchId = args.Id;
                     var doubleTapped = touchId == _lastTouchId && elapsed <= TimeSpan.FromMilliseconds(500);
-                    var tappedLocation = _viewModel.Report?.Locations.FirstOrDefault(x => IsInsideCircle(point.ToFormsPoint(), new Point(x.Left, x.Top), x.Radius)); 
+                    var tappedLocation = ViewModel.Report?.Locations.FirstOrDefault(x => IsInsideCircle(point.ToFormsPoint(), new Point(x.Left, x.Top), x.Radius));
 
                     if (doubleTapped)
                     {
-                        if (tappedLocation == _tappedLocation)
-                        {
-                            // Edit location.
-                        }
-                        else if(tappedLocation == null && _tappedLocation == null)
+                        if (tappedLocation == null && _tappedLocation == null)
                         {
                             // Add location.
-                            _viewModel.AddLocation.Execute(point.ToFormsPoint());
+                            ViewModel.AddLocation.Execute(point.ToFormsPoint());
+                        }
+                        else if (tappedLocation == _tappedLocation)
+                        {
+                            // Edit location.
+                            ViewModel.EditLocation.Execute(tappedLocation);
                         }
                     }
 
-                    if (_tappedLocation != null) 
+                    if (_tappedLocation != null)
                         _touchDictionary[args.Id] = point;
 
                     _lastTap = now;
@@ -100,7 +102,7 @@ namespace SafeWarehouseApp.Areas.Reports.Views
                 case TouchActionType.Moved:
                     if (_tappedLocation == null)
                         return;
-                    
+
                     if (_touchDictionary.ContainsKey(args.Id))
                     {
                         // Single-finger drag
@@ -145,7 +147,7 @@ namespace SafeWarehouseApp.Areas.Reports.Views
 
                                 if (_tappedLocation.Radius > CanvasView.Width - 30)
                                     _tappedLocation.Radius = (float) (CanvasView.Width - 30);
-                                
+
                                 CanvasView.InvalidateSurface();
                             }
                         }
@@ -158,7 +160,7 @@ namespace SafeWarehouseApp.Areas.Reports.Views
 
                 case TouchActionType.Released:
                 case TouchActionType.Cancelled:
-                    if (_touchDictionary.ContainsKey(args.Id)) 
+                    if (_touchDictionary.ContainsKey(args.Id))
                         _touchDictionary.Remove(args.Id);
                     break;
             }
@@ -171,7 +173,7 @@ namespace SafeWarehouseApp.Areas.Reports.Views
             var centerX = circleLocation.X;
             var centerY = circleLocation.Y;
             var radius = circleRadius;
-            
+
             // If radius is too small, it becomes hard to pinch, so increase hit-test area.
             if (radius < 60)
                 radius = 60;

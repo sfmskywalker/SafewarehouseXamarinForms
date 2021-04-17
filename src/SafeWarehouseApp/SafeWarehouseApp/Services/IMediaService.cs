@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using SafeWarehouseApp.Models;
 using Xamarin.Essentials;
 
@@ -11,5 +12,6 @@ namespace SafeWarehouseApp.Services
         Task<MediaItem> CreateMediaItem(FileResult fileResult, string? tag = default);
         Task<string?> GetMediaItemPathAsync(string mediaItemId);
         Task DeleteManyByTagAsync(string tag);
+        Task DeleteManyByIdAsync(IEnumerable<string> ids);
     }
 }

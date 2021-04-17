@@ -36,7 +36,8 @@ namespace SafeWarehouseApp
                 .AddSingleton<IStore<Customer>, CustomerStore>()
                 .AddSingleton<IStore<Report>, ReportStore>()
                 .AddSingleton<IStore<MediaItem>, EntityFrameworkStore<MediaItem>>()
-                .AddSingleton<IMediaService, MediaService>();
+                .AddSingleton<IMediaService, MediaService>()
+                .AddSingleton<IActionSheetService, ActionSheetService>();
 
             return services.BuildServiceProvider();
         }

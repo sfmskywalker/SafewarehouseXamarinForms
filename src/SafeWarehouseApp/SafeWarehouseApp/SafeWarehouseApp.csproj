@@ -143,5 +143,14 @@
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Assets" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\placeholder.png" />
+    <EmbeddedResource Include="Assets\placeholder.png" />
+  </ItemGroup>
   
 </Project>

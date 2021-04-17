@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -50,26 +51,43 @@ namespace SafeWarehouseApp.Services
 
         public async Task DeleteManyByTagAsync(string tag)
         {
-            var mediaItems = (await _mediaItemStore.FindManyAsync(x => x.Tag!.Contains(tag))).ToList();
-
-            foreach (var mediaItem in mediaItems)
-            {
-                var fullPath = GetFullPath(mediaItem.FileName);
-
-                try
-                {
-                    File.Delete(fullPath);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                    throw;
-                }
-            }
-
-            await _mediaItemStore.DeleteManyAsync(mediaItems);
+            var mediaItems = await _mediaItemStore.FindManyAsync(x => x.Tag!.Contains(tag));
+            await DeleteManyAsync(mediaItems);
         }
 
+        public async Task DeleteManyByIdAsync(IEnumerable<string> ids)
+        {
+            var idList = ids.ToList();
+            var mediaItems = (await _mediaItemStore.FindManyAsync(x => idList.Contains(x.Id))).ToList();
+            await DeleteManyAsync(mediaItems);
+        }
+
+        private async Task DeleteManyAsync(IEnumerable<MediaItem> mediaItems)
+        {
+            var list = mediaItems.ToList();
+            
+            foreach (var mediaItem in list)
+            {
+                var fullPath = GetFullPath(mediaItem.FileName);
+                TryDelete(fullPath);
+            }
+
+            await _mediaItemStore.DeleteManyAsync(list);
+        }
+        
+        private void TryDelete(string path)
+        {
+            try
+            {
+                File.Delete(path);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+        
         private static string GetFullPath(string path) => Path.Combine(FileSystem.AppDataDirectory, path);
     }
 }

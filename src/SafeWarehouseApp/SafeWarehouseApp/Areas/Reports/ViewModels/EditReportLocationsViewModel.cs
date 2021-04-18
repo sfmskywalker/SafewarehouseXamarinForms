@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Threading.Tasks;
 using SafeWarehouseApp.Areas.Reports.Views;
 using SafeWarehouseApp.Models;
+using SafeWarehouseApp.Services;
 using SafeWarehouseApp.ViewModels;
 using Xamarin.Forms;
 
@@ -15,6 +17,8 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
         {
             AddLocation = new Command<Point>(OnAddLocationAsync);
             EditLocation = new Command<Location>(OnEditLocationAsync);
+            ShowActionSheet = new Command<Location>(OnShowActionSheet);
+            SaveChanges = new Command(OnSaveChangesAsync);
         }
 
         public Report Report
@@ -35,6 +39,8 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
 
         public Command<Point> AddLocation { get; }
         public Command<Location> EditLocation { get; }
+        public Command<Location> ShowActionSheet { get; set; }
+        public Command SaveChanges { get; }
 
         private async void LoadSchematicAsync()
         {
@@ -64,5 +70,20 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
         {
             await Shell.Current.GoToAsync($"{nameof(EditLocationPage)}?{nameof(EditLocationViewModel.ReportId)}={Report.Id}&{nameof(EditLocationViewModel.LocationId)}={location.Id}", true);    
         }
+        
+        private async void OnShowActionSheet(Location location)
+        {
+            var cancelAction = "Annuleren";
+            var deleteAction = "Verwijderen";
+            var action = await GetService<IActionSheetService>().ShowActionSheet($"Locatie {location.Number}", cancelAction, deleteAction);
+
+            if (action == deleteAction)
+            {
+                Report.Locations.Remove(location);
+                SaveChanges.Execute(null);
+            }
+        }
+
+        private async void OnSaveChangesAsync() => await ReportStore.UpdateAsync(Report);
     }
 }

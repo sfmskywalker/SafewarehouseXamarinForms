@@ -42,6 +42,7 @@ namespace SafeWarehouseApp.Migrations
                 {
                     Id = table.Column<string>(type: "TEXT", nullable: false),
                     FileName = table.Column<string>(type: "TEXT", nullable: false),
+                    ContentType = table.Column<string>(type: "TEXT", nullable: false),
                     Tag = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>

@@ -10,6 +10,8 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
+    <PackageReference Include="jsreport.Binary" Version="2.11.0" />
+    <PackageReference Include="jsreport.Local" Version="2.3.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.4" />
     <PackageReference Include="SkiaSharp.Views.Forms" Version="2.80.2" />
     <PackageReference Include="Xamarin.Forms" Version="5.0.0.2012" />  
@@ -145,12 +147,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Assets" />
+    <None Remove="Assets\placeholder.png" />
+    <EmbeddedResource Include="Assets\placeholder.png" />
+    <None Remove="Assets\report.handlebars" />
+    <EmbeddedResource Include="Assets\report.handlebars" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Assets\placeholder.png" />
-    <EmbeddedResource Include="Assets\placeholder.png" />
+    <Folder Include="Migrations" />
   </ItemGroup>
   
 </Project>

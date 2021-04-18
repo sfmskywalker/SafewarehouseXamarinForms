@@ -8,7 +8,7 @@
             android:TabbedPage.IsSwipePagingEnabled="False"
             Title="Rapport">
     <TabbedPage.ToolbarItems>
-        <ToolbarItem Text="PDF" Command="{Binding CreatePdf}" />
+        <ToolbarItem Text="PDF" Command="{Binding CreatePdfCommand}" />
     </TabbedPage.ToolbarItems>
     <TabbedPage.Children>
         <views:EditReportLocationsPage Title="Plattegrond" BindingContext="{Binding EditReportLocationsViewModel}"/>

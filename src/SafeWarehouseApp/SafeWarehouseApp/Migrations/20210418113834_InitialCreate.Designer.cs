@@ -9,7 +9,7 @@ using SafeWarehouseApp.Persistence;
 namespace SafeWarehouseApp.Migrations
 {
     [DbContext(typeof(SafeWarehouseContext))]
-    [Migration("20210328174217_InitialCreate")]
+    [Migration("20210418113834_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -85,6 +85,10 @@ namespace SafeWarehouseApp.Migrations
             modelBuilder.Entity("SafeWarehouseApp.Models.MediaItem", b =>
                 {
                     b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("FileName")

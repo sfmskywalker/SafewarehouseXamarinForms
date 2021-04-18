@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using SafeWarehouseApp.Models;
 using SafeWarehouseApp.Persistence;
@@ -36,6 +37,7 @@ namespace SafeWarehouseApp.Services
             {
                 Id = Guid.NewGuid().ToString("N"),
                 FileName = $"{Guid.NewGuid():N}{extension}",
+                ContentType = fileResult.ContentType,
                 Tag = tag
             };
 
@@ -49,6 +51,8 @@ namespace SafeWarehouseApp.Services
             return mediaItem == null ? null : GetFullPath(mediaItem.FileName);
         }
 
+        public Task<MediaItem?> GetMediaItemAsync(string mediaItemId) => _mediaItemStore.FindAsync(mediaItemId);
+
         public async Task DeleteManyByTagAsync(string tag)
         {
             var mediaItems = await _mediaItemStore.FindManyAsync(x => x.Tag!.Contains(tag));
@@ -60,6 +64,14 @@ namespace SafeWarehouseApp.Services
             var idList = ids.ToList();
             var mediaItems = (await _mediaItemStore.FindManyAsync(x => idList.Contains(x.Id))).ToList();
             await DeleteManyAsync(mediaItems);
+        }
+
+        public async Task<string> GetImageDataUrlAsync(MediaItem mediaItem, CancellationToken cancellationToken = default)
+        {
+            var fullPath = GetFullPath(mediaItem.FileName);
+            var bytes = await File.ReadAllBytesAsync(fullPath, cancellationToken);
+            var base64 = Convert.ToBase64String(bytes);
+            return $"data:{mediaItem.ContentType};base64,{base64}";
         }
 
         private async Task DeleteManyAsync(IEnumerable<MediaItem> mediaItems)

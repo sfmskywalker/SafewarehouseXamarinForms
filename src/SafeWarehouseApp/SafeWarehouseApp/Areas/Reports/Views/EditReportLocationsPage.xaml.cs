@@ -47,15 +47,13 @@ namespace SafeWarehouseApp.Areas.Reports.Views
             foreach (var location in reportLocations)
             {
                 var fillColor = location == selectedLocation ? SKColors.Blue : SKColors.Red;
-                var strokeColor = fillColor.WithAlpha(50);
+                var strokeColor = fillColor;
 
                 using var circlePaint = new SKPaint 
                 {
                     Style = SKPaintStyle.Fill,
                     Color = fillColor.WithAlpha(50),
-                    TextAlign = SKTextAlign.Center,
-                    TextSize = 50,
-                    StrokeWidth = 5,
+                    StrokeWidth = 2,
                     IsAntialias = true
                 };
                 
@@ -70,7 +68,7 @@ namespace SafeWarehouseApp.Areas.Reports.Views
                 };
                 
                 canvas.DrawCircle(location.Left, location.Top, location.Radius, circlePaint);
-                circlePaint.Color = strokeColor;
+                circlePaint.Color = strokeColor.WithAlpha(30);
                 circlePaint.Style = SKPaintStyle.Stroke;
                 canvas.DrawCircle(location.Left, location.Top, location.Radius, circlePaint);
 

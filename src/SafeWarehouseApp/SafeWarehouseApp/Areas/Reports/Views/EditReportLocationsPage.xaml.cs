@@ -19,7 +19,7 @@ namespace SafeWarehouseApp.Areas.Reports.Views
         private long? _lastTouchId;
         private Location? _tappedLocation;
         private Location? _selectedLocation;
-        private Timer _pressAndHoldTimer;
+        private readonly Timer _pressAndHoldTimer;
 
         public EditReportLocationsPage()
         {

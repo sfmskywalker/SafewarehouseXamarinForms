@@ -50,7 +50,7 @@ namespace SafeWarehouseApp.ViewModels
             return true;
         }
         
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
             var changed = PropertyChanged;
             changed?.Invoke(this, new PropertyChangedEventArgs(propertyName));

@@ -7,7 +7,6 @@ namespace SafeWarehouseApp.Areas.Reports.Views
         public EditReportMetadataPage()
         {
             InitializeComponent();
-            BindingContext = new EditReportLocationsViewModel();
         }
     }
 }

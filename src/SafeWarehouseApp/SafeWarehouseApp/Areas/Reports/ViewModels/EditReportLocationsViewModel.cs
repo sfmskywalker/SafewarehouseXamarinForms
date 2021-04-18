@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using SafeWarehouseApp.Areas.Reports.Views;
 using SafeWarehouseApp.Models;
 using SafeWarehouseApp.Services;

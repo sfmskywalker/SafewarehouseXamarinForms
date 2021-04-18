@@ -2,8 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using SafeWarehouseApp.Areas.Customers.Views;
-using SafeWarehouseApp.Areas.Materials.ViewModels;
-using SafeWarehouseApp.Areas.Materials.Views;
 using SafeWarehouseApp.Models;
 using SafeWarehouseApp.Persistence;
 using SafeWarehouseApp.ViewModels;

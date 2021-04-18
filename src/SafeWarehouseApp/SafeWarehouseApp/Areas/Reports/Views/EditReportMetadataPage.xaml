@@ -4,5 +4,18 @@
             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
             x:Class="SafeWarehouseApp.Areas.Reports.Views.EditReportMetadataPage"
             Title="Meta">
-    <Label>Metadata goes here...</Label>
+    <StackLayout Spacing="15" Padding="15">
+        <StackLayout>
+            <Label Text="Opmerkingen" FontSize="Medium" />
+            <Entry Text="{Binding Remarks, Mode=TwoWay}" FontSize="Medium" />
+        </StackLayout>
+        <StackLayout>
+            <Label Text="Datum" FontSize="Medium" />
+            <DatePicker Date="{Binding ReportDate, Mode=TwoWay}" FontSize="Medium" />
+        </StackLayout>
+        <StackLayout>
+            <Label Text="Volgende keuring voor" FontSize="Medium" />
+            <DatePicker Date="{Binding NextExaminationBefore, Mode=TwoWay}" FontSize="Medium" />
+        </StackLayout>
+    </StackLayout>
 </ContentPage>

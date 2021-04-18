@@ -7,6 +7,11 @@
             xmlns:android="clr-namespace:Xamarin.Forms.PlatformConfiguration.AndroidSpecific;assembly=Xamarin.Forms.Core"
             android:TabbedPage.IsSwipePagingEnabled="False"
             Title="Rapport">
-    <views:EditReportLocationsPage Title="Plattegrond" BindingContext="{Binding EditReportLocationsViewModel}"/>
-    <views:EditReportMetadataPage Title="Metadata" BindingContext="{Binding EditReportMetadataViewModel}"/>
+    <TabbedPage.ToolbarItems>
+        <ToolbarItem Text="PDF" Command="{Binding CreatePdf}" />
+    </TabbedPage.ToolbarItems>
+    <TabbedPage.Children>
+        <views:EditReportLocationsPage Title="Plattegrond" BindingContext="{Binding EditReportLocationsViewModel}"/>
+        <views:EditReportMetadataPage Title="Metadata" BindingContext="{Binding EditReportMetadataViewModel}"/>
+    </TabbedPage.Children>
 </TabbedPage>

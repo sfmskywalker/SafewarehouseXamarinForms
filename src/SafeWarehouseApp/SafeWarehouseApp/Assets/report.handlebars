@@ -1,44 +1,6 @@
 ﻿
-<link rel="preconnect" href="https://fonts.gstatic.com">
-<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.0.3/tailwind.min.css" integrity="sha512-wl80ucxCRpLkfaCnbM88y4AxnutbGk327762eM9E/rRTvY/ZGAHWMZrYUq66VQBYMIYDFpDdJAOGSLyIPHZ2IQ==" crossorigin="anonymous" />
-
-<style>
-    .report, .report td {
-        font-size: 12pt;
-        line-height: 1.5em;
-        font-family: 'Roboto', sans-serif;
-    }
-
-    .page {
-        page-break-after: always;
-    }
-
-    .schematic {
-        position: relative;
-    }
-
-    .schematic img {
-        /* width: unset;
-        height: unset;
-        max-width: unset;
-        max-height: unset; */
-    }
-
-    .schematic .location {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 6em;
-        height: 6em;
-        border: 2px solid rgba(219, 39, 119, 1);
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.75);
-        cursor: move;
-        touch-action: none;
-        user-select: none;
-    }
-</style>
+<link rel="stylesheet" href="pdf/tailwind.css" />
+<link rel="stylesheet" href="pdf/report.css"  />
 
 <div class="report">
     <!-- Customer & report details -->
@@ -75,7 +37,7 @@
                 <img src="{{SchematicData}}" alt="" width="800" height="800" />
                 {{#each Locations}}
                     <div class="location flex flex-col justify-center" style="left: {{Left}}px; top: {{Top}}px; width: {{Width}}px; height: {{Height}}px;">
-                        <span class="text-2xl font-semibold text-pink-500 text-center">{{Number}}</span>
+                        <span class="text-2xl font-semibold text-white text-center">{{Number}}</span>
                     </div>
                 {{/each}}
             </div>

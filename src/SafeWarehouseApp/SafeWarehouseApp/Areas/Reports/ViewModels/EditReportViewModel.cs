@@ -1,8 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using SafeWarehouseApp.Areas.Reports.Views;
 using SafeWarehouseApp.Models;
 using SafeWarehouseApp.Persistence;
 using SafeWarehouseApp.Services;
 using SafeWarehouseApp.ViewModels;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace SafeWarehouseApp.Areas.Reports.ViewModels
@@ -62,10 +65,6 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
             await CloseAsync();
         }
         
-        private async void OnCreatePdf()
-        {
-            var generator = GetService<IReportPdfGenerator>();
-            var document = await generator.GenerateReportPdfAsync(_report);
-        }
+        private async void OnCreatePdf() => await Shell.Current.GoToAsync($"{nameof(ReportPdfPage)}?{nameof(ReportPdfViewModel.ReportId)}={ReportId}", true);
     }
 }

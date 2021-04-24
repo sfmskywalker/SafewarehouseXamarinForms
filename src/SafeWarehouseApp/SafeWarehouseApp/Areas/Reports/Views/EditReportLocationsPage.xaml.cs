@@ -20,6 +20,7 @@ namespace SafeWarehouseApp.Areas.Reports.Views
         private Location? _tappedLocation;
         private Location? _selectedLocation;
         private readonly Timer _pressAndHoldTimer;
+        private SKBitmap? _schematicBitmap;
 
         public EditReportLocationsPage()
         {
@@ -41,6 +42,15 @@ namespace SafeWarehouseApp.Areas.Reports.Views
             if (report == null!)
                 return;
 
+            var schematicBitmap = _schematicBitmap;
+
+            if (schematicBitmap == null) 
+                _schematicBitmap = schematicBitmap = SKBitmap.Decode(ViewModel.SchematicImagePath);
+
+            var targetRect = args.Info.Rect;
+            
+            canvas.DrawBitmap(schematicBitmap, targetRect);
+            
             var reportLocations = report.Locations;
             var selectedLocation = _selectedLocation;
 

@@ -10,8 +10,8 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
-    <PackageReference Include="jsreport.Binary" Version="2.11.0" />
-    <PackageReference Include="jsreport.Local" Version="2.3.1" />
+    <PackageReference Include="Forms9Patch" Version="2.4.9" />
+    <PackageReference Include="Handlebars.Net" Version="2.0.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.4" />
     <PackageReference Include="SkiaSharp.Views.Forms" Version="2.80.2" />
     <PackageReference Include="Xamarin.Forms" Version="5.0.0.2012" />  
@@ -142,6 +142,10 @@
     </Compile>
     <Compile Update="Areas\Reports\Views\EditDamagePage.xaml.cs">
       <DependentUpon>EditDamagePage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Areas\Reports\Views\ReportPdfPage.xaml.cs">
+      <DependentUpon>ReportPdfPage.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

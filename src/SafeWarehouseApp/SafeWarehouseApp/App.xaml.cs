@@ -8,6 +8,7 @@ using SafeWarehouseApp.Models;
 using SafeWarehouseApp.Persistence;
 using SafeWarehouseApp.Persistence.Stores;
 using SafeWarehouseApp.Services;
+using Xamarin.Forms;
 
 namespace SafeWarehouseApp
 {
@@ -16,15 +17,14 @@ namespace SafeWarehouseApp
         public App()
         {
             InitializeComponent();
-            Services = CreateServices();
+            //Services = CreateServices();
             MainPage = new AppShell();
         }
 
-        public static IServiceProvider Services { get; private set; } = default!;
+        public static IServiceProvider Services { get; set; } = default!;
 
-        private IServiceProvider CreateServices()
+        public void ConfigureServices(IServiceCollection services)
         {
-            var services = new ServiceCollection();
             var dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "veiligmagazijn.db");
 
             services
@@ -39,9 +39,7 @@ namespace SafeWarehouseApp
                 .AddSingleton<IMediaService, MediaService>()
                 .AddSingleton<IActionSheetService, ActionSheetService>()
                 .AddSingleton<IPdfGenerator, PdfGenerator>()
-                .AddSingleton<IReportPdfGenerator, ReportPdfGenerator>();
-
-            return services.BuildServiceProvider();
+                .AddSingleton<IReportHtmlGenerator, ReportHtmlGenerator>();
         }
 
         protected override void OnStart()

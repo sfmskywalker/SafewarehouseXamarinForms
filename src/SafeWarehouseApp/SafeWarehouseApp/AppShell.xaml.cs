@@ -25,6 +25,7 @@ namespace SafeWarehouseApp
             Routing.RegisterRoute(nameof(EditReportPage), typeof(EditReportPage));
             Routing.RegisterRoute(nameof(EditLocationPage), typeof(EditLocationPage));
             Routing.RegisterRoute(nameof(EditDamagePage), typeof(EditDamagePage));
+            Routing.RegisterRoute(nameof(ReportPdfPage), typeof(ReportPdfPage));
         }
 
         private async void OnMenuItemClicked(object sender, EventArgs e)

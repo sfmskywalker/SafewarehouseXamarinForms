@@ -2,6 +2,9 @@
 using Android.Content.PM;
 using Android.Runtime;
 using Android.OS;
+using Microsoft.Extensions.DependencyInjection;
+using SafeWarehouseApp.Droid.Services;
+using SafeWarehouseApp.Services;
 
 namespace SafeWarehouseApp.Droid
 {
@@ -20,7 +23,18 @@ namespace SafeWarehouseApp.Droid
 
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             Xamarin.Forms.Forms.Init(this, savedInstanceState);
-            LoadApplication(new App());
+            Forms9Patch.Droid.Settings.Initialize(this);
+
+            var app = new App();
+            var services = new ServiceCollection();
+
+            services.AddSingleton<IBaseUrlProvider, AndroidBaseUrlProvider>();
+            app.ConfigureServices(services);
+            
+            var serviceProvider = services.BuildServiceProvider();
+            App.Services = serviceProvider;
+            
+            LoadApplication(app);
         }
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)

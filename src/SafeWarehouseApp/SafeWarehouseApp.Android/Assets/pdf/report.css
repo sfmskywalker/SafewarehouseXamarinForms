@@ -1,0 +1,34 @@
+.report, .report td {
+    font-size: 12pt;
+    line-height: 1.5em;
+    font-family: 'Roboto', sans-serif;
+}
+
+.page {
+    page-break-after: always;
+}
+
+.schematic {
+    position: relative;
+}
+
+.schematic img {
+    /* width: unset;
+    height: unset;
+    max-width: unset;
+    max-height: unset; */
+}
+
+.schematic .location {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 6em;
+    height: 6em;
+    border: 2px solid rgba(255, 0, 0, 0.5);
+    border-radius: 50%;
+    background: rgba(255, 0, 0, 0.5);
+    cursor: move;
+    touch-action: none;
+    user-select: none;
+}

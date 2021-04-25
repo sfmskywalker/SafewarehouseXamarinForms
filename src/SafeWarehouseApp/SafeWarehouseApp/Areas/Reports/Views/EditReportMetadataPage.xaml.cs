@@ -1,6 +1,4 @@
-﻿using SafeWarehouseApp.Areas.Reports.ViewModels;
-
-namespace SafeWarehouseApp.Areas.Reports.Views
+﻿namespace SafeWarehouseApp.Areas.Reports.Views
 {
     public partial class EditReportMetadataPage
     {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using System.Threading.Tasks;
 using SafeWarehouseApp.Models;
 using SafeWarehouseApp.ViewModels;
 using Xamarin.Forms;
@@ -52,23 +53,27 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
         }
 
         public Command SaveChanges { get; }
-        
-        protected override void OnPropertyChanged([CallerMemberName] string propertyName = "")
+
+        protected override async void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
-            if(propertyName != nameof(Report))
-                _updateTimer.Change(TimeSpan.FromSeconds(3), Timeout.InfiniteTimeSpan);
+            if (propertyName == nameof(Remarks))
+                _updateTimer.Change(TimeSpan.FromSeconds(1), Timeout.InfiniteTimeSpan);
+            else
+                await SaveChangesAsync();
             
             base.OnPropertyChanged(propertyName);
         }
 
         private void OnUpdateTimerTick(object state) => OnSaveChangesAsync();
         
-        private async void OnSaveChangesAsync()
+        private async Task SaveChangesAsync()
         {
             Report.Remarks = Remarks?.Trim();
             Report.Date = ReportDate ?? Report.Date;
             Report.NextExaminationBefore = NextExaminationBefore;
             await ReportStore.UpdateAsync(Report);
         }
+        
+        private async void OnSaveChangesAsync() => await SaveChangesAsync();
     }
 }

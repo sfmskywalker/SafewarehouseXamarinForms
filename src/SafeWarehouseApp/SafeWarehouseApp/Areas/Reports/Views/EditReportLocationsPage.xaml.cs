@@ -20,6 +20,7 @@ namespace SafeWarehouseApp.Areas.Reports.Views
         private Location? _tappedLocation;
         private Location? _selectedLocation;
         private readonly Timer _pressAndHoldTimer;
+        private bool _moveThresholdReached;
 
         public EditReportLocationsPage()
         {
@@ -44,6 +45,8 @@ namespace SafeWarehouseApp.Areas.Reports.Views
 
         private void OnPressAndHoldTimeoutReached(object state)
         {
+            _moveThresholdReached = false;
+            
             if (_tappedLocation == null)
                 return;
 
@@ -115,7 +118,8 @@ namespace SafeWarehouseApp.Areas.Reports.Views
                     _lastTap = now;
                     _lastTouchId = touchId;
                     _tappedLocation = tappedLocation;
-                    _pressAndHoldTimer.Change(TimeSpan.FromSeconds(0.75), Timeout.InfiniteTimeSpan);
+                    _moveThresholdReached = false;
+                    _pressAndHoldTimer.Change(TimeSpan.FromSeconds(1), Timeout.InfiniteTimeSpan);
                     break;
 
                 case TouchActionType.Moved:
@@ -123,8 +127,6 @@ namespace SafeWarehouseApp.Areas.Reports.Views
 
                     if (location == null)
                         return;
-
-                    var moveThresholdReached = false;
 
                     if (_touchDictionary.ContainsKey(args.Id))
                     {
@@ -141,12 +143,12 @@ namespace SafeWarehouseApp.Areas.Reports.Views
                             CanvasView.InvalidateSurface();
 
                             if (deltaX >= 5 || deltaY >= 5)
-                                moveThresholdReached = true;
+                                _moveThresholdReached = true;
                         }
                         // Double-finger scale and drag
                         else if (_touchDictionary.Count >= 2)
                         {
-                            moveThresholdReached = true;
+                            _moveThresholdReached = true;
 
                             // Copy two dictionary keys into array
                             var keys = new long[_touchDictionary.Count];
@@ -187,7 +189,7 @@ namespace SafeWarehouseApp.Areas.Reports.Views
                         _touchDictionary[args.Id] = point;
                     }
 
-                    if (moveThresholdReached)
+                    if (_moveThresholdReached)
                         _pressAndHoldTimer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
 
                     break;

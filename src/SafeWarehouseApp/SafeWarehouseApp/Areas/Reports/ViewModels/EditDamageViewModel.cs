@@ -169,9 +169,7 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
                 await SelectPhotoAsync(() => MediaPicker.PickPhotoAsync(), damagePicture);
         }
 
-        private void OnDeleteRequiredMaterial(RequiredMaterial requiredMaterial)
-        {
-        }
+        private void OnDeleteRequiredMaterial(RequiredMaterial requiredMaterial) => RequiredMaterials.Remove(requiredMaterial);
 
         private void OnAddRequiredMaterial()
         {

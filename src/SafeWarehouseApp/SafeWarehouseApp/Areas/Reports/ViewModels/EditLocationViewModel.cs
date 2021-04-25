@@ -97,6 +97,12 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
 
         private bool ValidateSave() => true;
         private async Task CloseAsync() => await Shell.Current.GoToAsync("..", true);
+        
+        private async Task SaveAsync()
+        {
+            _location.Description = Description?.Trim();
+            await ReportStore.UpdateAsync(_report);
+        }
 
         private void OnDeleteDamage(DamageSummaryViewModel model)
         {
@@ -121,12 +127,13 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
             };
 
             _location.Damages.Add(damage);
-            await ReportStore.UpdateAsync(_report);
+            await SaveAsync();
             await OnEditDamage(damage);
         }
         
         private async Task OnEditDamage(Damage damage)
         {
+            await SaveAsync();
             await Shell.Current.GoToAsync($"{nameof(EditDamagePage)}?{nameof(EditDamageViewModel.ReportId)}={ReportId}&{nameof(EditDamageViewModel.LocationId)}={LocationId}&{nameof(EditDamageViewModel.DamageId)}={damage.Id}", true);
         }
 
@@ -134,8 +141,7 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
 
         private async void OnSave()
         {
-            _location.Description = Description?.Trim();
-            await ReportStore.UpdateAsync(_report);
+            await SaveAsync();
             await CloseAsync();
         }
     }

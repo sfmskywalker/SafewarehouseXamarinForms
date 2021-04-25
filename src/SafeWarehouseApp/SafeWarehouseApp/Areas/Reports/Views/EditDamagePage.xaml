@@ -45,10 +45,8 @@
                                             ItemDisplayBinding="{Binding ., Converter={StaticResource MaterialDisplayConverter}, ConverterParameter={x:Reference Page}}"
                                             SelectedItem="{Binding MaterialId, Mode=TwoWay}" />
                                     <Entry Keyboard="Numeric" Text="{Binding Quantity}" HorizontalOptions="FillAndExpand" />
+                                    <Button Text="Verwijderen" Command="{Binding Path=BindingContext.DeleteRequiredMaterialCommand, Source={x:Reference Name=RequiredMaterialsListView}}" CommandParameter="{Binding .}" />
                                 </StackLayout>
-                                <ViewCell.ContextActions>
-                                    <MenuItem Command="{Binding Path=BindingContext.DeleteRequiredMaterialCommand, Source={x:Reference Name=RequiredMaterialsListView}}" CommandParameter="{Binding .}" Text="Verwijderen" IsDestructive="True" />
-                                </ViewCell.ContextActions>
                             </ViewCell>
                         </DataTemplate>
                     </ListView.ItemTemplate>
@@ -67,12 +65,11 @@
                         <DataTemplate>
                             <ViewCell>
                                 <StackLayout Orientation="Horizontal">
-                                    
-                                        <ImageButton Source="{Binding PictureId, Converter={StaticResource PictureDisplayConverter}, ConverterParameter={x:Reference Page}}"
-                                                     Command="{Binding Path=BindingContext.SelectPictureCommand, Source={x:Reference Name=DamagePicturesListView}}" CommandParameter="{Binding .}"
-                                                     BackgroundColor="Gray"
-                                                     Aspect="AspectFill"
-                                                     WidthRequest="100" />
+                                    <ImageButton Source="{Binding PictureId, Converter={StaticResource PictureDisplayConverter}, ConverterParameter={x:Reference Page}}"
+                                                 Command="{Binding Path=BindingContext.SelectPictureCommand, Source={x:Reference Name=DamagePicturesListView}}" CommandParameter="{Binding .}"
+                                                 BackgroundColor="Gray"
+                                                 Aspect="AspectFill"
+                                                 WidthRequest="100" />
                                         <Entry Keyboard="Text" Text="{Binding Description}" HorizontalOptions="FillAndExpand" Placeholder="Omschrijving" WidthRequest="400" />
                                         <Button Text="Verwijderen" Command="{Binding Path=BindingContext.DeleteDamagePictureCommand, Source={x:Reference Name=DamagePicturesListView}}" CommandParameter="{Binding .}" />
                                 </StackLayout>

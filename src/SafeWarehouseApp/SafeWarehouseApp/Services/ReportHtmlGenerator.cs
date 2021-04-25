@@ -33,9 +33,6 @@ namespace SafeWarehouseApp.Services
             var customer = customers.TryGet(report.CustomerId) ?? new Customer();
             var locations = report.Locations;
             var schematic = (await _mediaService.GetMediaItemAsync(report.PaintedSchematicMediaId!))!;
-            var scaleX = 715f / 800f;
-            var scaleY = 953f / 1096f;
-            var scaleRadius = Math.Min(scaleX, scaleX);
             var materials = (await _materialStore.ListAsync(cancellationToken: cancellationToken)).ToDictionary(x => x.Id);
 
             var requiredMaterials = locations
@@ -59,20 +56,10 @@ namespace SafeWarehouseApp.Services
                 SchematicData = await _mediaService.GetImageDataUrlAsync(schematic, cancellationToken),
                 Locations = await Task.WhenAll(locations.Select(async location =>
                 {
-                    var scaledRadius = (int) (location.Radius * scaleRadius);
-                    var scaledWidth = scaledRadius * 2;
-                    var scaledHeight = scaledRadius * 2;
-                    var scaledLeft = (int) ((location.Left - location.Radius) * scaleX);
-                    var scaledTop = (int) ((location.Top - location.Radius) * scaleY);
-                    
                     return new
                     {
                         Number = location.Number,
                         Description = location.Description,
-                        Left = scaledLeft,
-                        Top = scaledTop,
-                        Width = scaledWidth,
-                        Height = scaledHeight,
                         Damages = await Task.WhenAll(location.Damages.Select(async damage => new
                         {
                             Number = damage.Number,

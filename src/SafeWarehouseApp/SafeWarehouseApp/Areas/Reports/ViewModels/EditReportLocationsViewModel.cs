@@ -13,6 +13,7 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
         private Report _report = default!;
         private string _schematicImagePath = default!;
         private SKBitmap? _schematicBitmap;
+        private SKRectI? _rect;
 
         public EditReportLocationsViewModel()
         {
@@ -46,11 +47,12 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
 
         public SKBitmap CreateSchematicBitmap()
         {
-            var size = DimensionProvider();
-            var bitmap = new SKBitmap((int) size.Width, (int) size.Height);
+            var rect = _rect!.Value;
+            var size = rect.Size;
+            var bitmap = new SKBitmap(size.Width, size.Height);
 
             using var canvas = new SKCanvas(bitmap);
-            DrawSchematic(canvas, new SKRectI(0, 0, bitmap.Width, bitmap.Height));
+            DrawSchematic(canvas, rect);
 
             return bitmap;
         }
@@ -67,8 +69,10 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
             var schematicBitmap = _schematicBitmap;
 
             if (schematicBitmap == null)
-                _schematicBitmap = schematicBitmap = SKBitmap.Decode(SchematicImagePath);
+                schematicBitmap = _schematicBitmap = SKBitmap.Decode(SchematicImagePath);
 
+            _rect = targetRect;
+                
             canvas.DrawBitmap(schematicBitmap, targetRect);
 
             var reportLocations = report.Locations;
@@ -96,10 +100,14 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
                     IsAntialias = true
                 };
 
-                canvas.DrawCircle(location.Left, location.Top, location.Radius, circlePaint);
+                var locationLeft = location.Left;
+                var locationTop = location.Top;
+                var locationRadius = location.Radius;
+
+                canvas.DrawCircle(locationLeft, locationTop, locationRadius, circlePaint);
                 circlePaint.Color = strokeColor.WithAlpha(30);
                 circlePaint.Style = SKPaintStyle.Stroke;
-                canvas.DrawCircle(location.Left, location.Top, location.Radius, circlePaint);
+                canvas.DrawCircle(locationLeft, locationTop, locationRadius, circlePaint);
 
                 var text = location.Number.ToString();
                 var textBounds = new SKRect();

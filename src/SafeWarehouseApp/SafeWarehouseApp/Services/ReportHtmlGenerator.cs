@@ -6,6 +6,7 @@ using HandlebarsDotNet;
 using SafeWarehouseApp.Extensions;
 using SafeWarehouseApp.Models;
 using SafeWarehouseApp.Persistence;
+using SkiaSharp;
 
 namespace SafeWarehouseApp.Services
 {
@@ -15,15 +16,13 @@ namespace SafeWarehouseApp.Services
         private readonly IStore<DamageType> _damageTypeStore;
         private readonly IStore<Material> _materialStore;
         private readonly IMediaService _mediaService;
-        private readonly IPdfGenerator _pdfGenerator;
 
-        public ReportHtmlGenerator(IStore<Customer> customerStore, IStore<DamageType> damageTypeStore, IStore<Material> materialStore, IMediaService mediaService, IPdfGenerator pdfGenerator)
+        public ReportHtmlGenerator(IStore<Customer> customerStore, IStore<DamageType> damageTypeStore, IStore<Material> materialStore, IMediaService mediaService)
         {
             _customerStore = customerStore;
             _damageTypeStore = damageTypeStore;
             _materialStore = materialStore;
             _mediaService = mediaService;
-            _pdfGenerator = pdfGenerator;
         }
 
         public async Task<string> GenerateHtmlAsync(Report report, CancellationToken cancellationToken = default)
@@ -33,7 +32,10 @@ namespace SafeWarehouseApp.Services
             var customers = (await _customerStore.ListAsync(cancellationToken: cancellationToken)).ToDictionary(x => x.Id);
             var customer = customers.TryGet(report.CustomerId) ?? new Customer();
             var locations = report.Locations;
-            var schematic = (await _mediaService.GetMediaItemAsync(report.SchematicMediaId))!;
+            var schematic = (await _mediaService.GetMediaItemAsync(report.PaintedSchematicMediaId!))!;
+            var scaleX = 715f / 800f;
+            var scaleY = 953f / 1096f;
+            var scaleRadius = Math.Min(scaleX, scaleX);
             var materials = (await _materialStore.ListAsync(cancellationToken: cancellationToken)).ToDictionary(x => x.Id);
 
             var requiredMaterials = locations
@@ -45,8 +47,6 @@ namespace SafeWarehouseApp.Services
                     Quantity = x.Select(y => y.Quantity).Sum()
                 }).ToList();
 
-            var scale = 0.9f;
-            
             var model = new
             {
                 CompanyName = customer.CompanyName,
@@ -59,11 +59,11 @@ namespace SafeWarehouseApp.Services
                 SchematicData = await _mediaService.GetImageDataUrlAsync(schematic, cancellationToken),
                 Locations = await Task.WhenAll(locations.Select(async location =>
                 {
-                    var scaledRadius = (int) location.Radius * scale;
+                    var scaledRadius = (int) (location.Radius * scaleRadius);
                     var scaledWidth = scaledRadius * 2;
                     var scaledHeight = scaledRadius * 2;
-                    var scaledLeft = (int) ((location.Left - location.Radius) * scale);
-                    var scaledTop = (int) ((location.Top - location.Radius) * scale);
+                    var scaledLeft = (int) ((location.Left - location.Radius) * scaleX);
+                    var scaledTop = (int) ((location.Top - location.Radius) * scaleY);
                     
                     return new
                     {

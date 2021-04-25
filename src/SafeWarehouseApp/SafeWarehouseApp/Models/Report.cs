@@ -10,6 +10,7 @@ namespace SafeWarehouseApp.Models
         public DateTime? NextExaminationBefore { get; set; }
         public string? Remarks { get; set; }
         public string SchematicMediaId { get; set; } = default!;
+        public string? PaintedSchematicMediaId { get; set; }
         public IList<Location> Locations { get; set; } = new List<Location>();
 
         public void UpdateLocationNumbers()

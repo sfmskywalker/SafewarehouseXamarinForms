@@ -7,7 +7,7 @@
              xmlns:touch="clr-namespace:SafeWarehouseApp.Touch;assembly=SafeWarehouseApp"
              Title="Locations">
     <Grid>
-        <!-- <Image Source="{Binding SchematicImagePath}" Aspect="AspectFit" WidthRequest="720" HeightRequest="960" /> -->
+        <!-- <Image Source="{Binding SchematicImagePath}" Aspect="AspectFit" /> -->
         <skia:SKCanvasView x:Name="CanvasView" PaintSurface="OnCanvasViewPaintSurface" />
         <Grid.Effects>
             <touch:TouchEffect Capture="True" TouchAction="OnTouchEffectAction" />

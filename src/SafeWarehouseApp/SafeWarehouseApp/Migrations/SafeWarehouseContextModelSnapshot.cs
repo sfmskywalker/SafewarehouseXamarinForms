@@ -119,6 +119,9 @@ namespace SafeWarehouseApp.Migrations
                     b.Property<DateTime?>("NextExaminationBefore")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("PaintedSchematicMediaId")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Remarks")
                         .HasColumnType("TEXT");
 

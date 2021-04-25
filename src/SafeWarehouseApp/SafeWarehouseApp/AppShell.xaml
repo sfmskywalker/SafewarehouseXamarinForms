@@ -95,11 +95,11 @@
     <FlyoutItem Title="Schadesoorten" Icon="icon_feed.png">
         <ShellContent Route="ListDamageTypesPage" ContentTemplate="{DataTemplate damageTypes:ListDamageTypesPage}" />
     </FlyoutItem>
-    <FlyoutItem Title="Leveranciers" Icon="icon_feed.png">
-        <ShellContent Route="ListSuppliersPage" ContentTemplate="{DataTemplate suppliers:ListSuppliersPage}" />
-    </FlyoutItem>
     <FlyoutItem Title="Materialen" Icon="icon_feed.png">
         <ShellContent Route="ListMaterialsPage" ContentTemplate="{DataTemplate materials:ListMaterialsPage}" />
+    </FlyoutItem>
+    <FlyoutItem Title="Leveranciers" Icon="icon_feed.png">
+        <ShellContent Route="ListSuppliersPage" ContentTemplate="{DataTemplate suppliers:ListSuppliersPage}" />
     </FlyoutItem>
 
     <!-- When the Flyout is visible this will be a menu item you can tie a click behavior to  -->

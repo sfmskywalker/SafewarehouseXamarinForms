@@ -73,6 +73,7 @@ namespace SafeWarehouseApp.Migrations
                     NextExaminationBefore = table.Column<DateTime>(type: "TEXT", nullable: true),
                     Remarks = table.Column<string>(type: "TEXT", nullable: true),
                     SchematicMediaId = table.Column<string>(type: "TEXT", nullable: false),
+                    PaintedSchematicMediaId = table.Column<string>(type: "TEXT", nullable: true),
                     LocationsData = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>

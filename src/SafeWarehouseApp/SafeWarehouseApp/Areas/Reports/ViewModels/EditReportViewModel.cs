@@ -1,10 +1,12 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using SafeWarehouseApp.Areas.Reports.Views;
 using SafeWarehouseApp.Models;
 using SafeWarehouseApp.Persistence;
 using SafeWarehouseApp.Services;
 using SafeWarehouseApp.ViewModels;
+using SkiaSharp;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
@@ -65,6 +67,28 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
             await CloseAsync();
         }
         
-        private async void OnCreatePdf() => await Shell.Current.GoToAsync($"{nameof(ReportPdfPage)}?{nameof(ReportPdfViewModel.ReportId)}={ReportId}", true);
+        private async void OnCreatePdf()
+        {
+            var updatedBitmap = EditReportLocationsViewModel.CreateSchematicBitmap();
+            using var image = SKImage.FromBitmap(updatedBitmap);
+            var buffer = image.Encode(SKEncodedImageFormat.Png, 100).ToArray();
+            var paintedSchematicMediaItem = _report.PaintedSchematicMediaId != null ? await MediaService.GetMediaItemAsync(_report.PaintedSchematicMediaId) : default;
+
+            if (paintedSchematicMediaItem == null)
+            {
+                var schematicMediaItem = (await MediaService.GetMediaItemAsync(_report.SchematicMediaId))!;
+                var extension = Path.GetExtension(schematicMediaItem.FileName);
+                paintedSchematicMediaItem = await MediaService.CreateMediaItem(buffer, extension, schematicMediaItem.ContentType);
+                await MediaItemStore.AddAsync(paintedSchematicMediaItem);
+                _report.PaintedSchematicMediaId = paintedSchematicMediaItem.Id;
+                await ReportStore.SaveAsync(_report);
+            }
+            else
+            {
+                await MediaService.SaveBufferAsync(buffer, paintedSchematicMediaItem.FileName);
+            }
+            
+            await Shell.Current.GoToAsync($"{nameof(ReportPdfPage)}?{nameof(ReportPdfViewModel.ReportId)}={ReportId}", true);
+        }
     }
 }

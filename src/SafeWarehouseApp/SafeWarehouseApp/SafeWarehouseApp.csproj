@@ -156,9 +156,5 @@
     <None Remove="Assets\report.handlebars" />
     <EmbeddedResource Include="Assets\report.handlebars" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Migrations" />
-  </ItemGroup>
   
 </Project>

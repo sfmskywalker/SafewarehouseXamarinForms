@@ -9,10 +9,5 @@ namespace SafeWarehouseApp.Areas.Reports.Views
             InitializeComponent();
             BindingContext = new EditReportViewModel();
         }
-
-        protected override void OnCurrentPageChanged()
-        {
-            base.OnCurrentPageChanged();
-        }
     }
 }

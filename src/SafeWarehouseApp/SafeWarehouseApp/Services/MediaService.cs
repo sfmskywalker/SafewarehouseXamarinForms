@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SafeWarehouseApp.Extensions;
 using SafeWarehouseApp.Models;
 using SafeWarehouseApp.Persistence;
 using Xamarin.Essentials;
@@ -21,6 +22,12 @@ namespace SafeWarehouseApp.Services
             await using var newStream = File.OpenWrite(GetFullPath(path));
             await stream.CopyToAsync(newStream);
         }
+        
+        public async Task SaveBufferAsync(byte[] buffer, string path)
+        {
+            await using var newStream = File.OpenWrite(GetFullPath(path));
+            await newStream.WriteAsync(buffer);
+        }
 
         public async Task<MediaItem> SaveAsMediaItem(FileResult fileResult, string? tag = default)
         {
@@ -31,17 +38,24 @@ namespace SafeWarehouseApp.Services
         
         public async Task<MediaItem> CreateMediaItem(FileResult fileResult, string? tag = default)
         {
-            var extension = Path.GetExtension(fileResult.FileName);
-
+            var fileName = Path.GetFileName(fileResult.FileName);
+            await using var stream = await fileResult.OpenReadAsync();
+            var buffer = await stream.ToByteArrayAsync();
+            var extension = Path.GetExtension(fileName);
+            return await CreateMediaItem(buffer, extension, fileResult.ContentType);
+        }
+        
+        public async Task<MediaItem> CreateMediaItem(byte[] buffer, string extension, string contentType, string? tag = default)
+        {
             var mediaItem = new MediaItem
             {
                 Id = Guid.NewGuid().ToString("N"),
                 FileName = $"{Guid.NewGuid():N}{extension}",
-                ContentType = fileResult.ContentType,
+                ContentType = contentType,
                 Tag = tag
             };
 
-            await SaveFileResultAsync(fileResult, mediaItem.FileName);
+            await SaveBufferAsync(buffer, mediaItem.FileName);
             return mediaItem;
         }
 
@@ -50,6 +64,8 @@ namespace SafeWarehouseApp.Services
             var mediaItem = await _mediaItemStore.FindAsync(mediaItemId);
             return mediaItem == null ? null : GetFullPath(mediaItem.FileName);
         }
+
+        public string GetMediaItemPath(MediaItem mediaItem) => GetFullPath(mediaItem.FileName);
 
         public Task<MediaItem?> GetMediaItemAsync(string mediaItemId) => _mediaItemStore.FindAsync(mediaItemId);
 

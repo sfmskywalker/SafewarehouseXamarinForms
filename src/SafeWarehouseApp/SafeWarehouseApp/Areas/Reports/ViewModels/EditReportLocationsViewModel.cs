@@ -3,6 +3,7 @@ using SafeWarehouseApp.Areas.Reports.Views;
 using SafeWarehouseApp.Models;
 using SafeWarehouseApp.Services;
 using SafeWarehouseApp.ViewModels;
+using SkiaSharp;
 using Xamarin.Forms;
 
 namespace SafeWarehouseApp.Areas.Reports.ViewModels
@@ -11,6 +12,7 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
     {
         private Report _report = default!;
         private string _schematicImagePath = default!;
+        private SKBitmap? _schematicBitmap;
 
         public EditReportLocationsViewModel()
         {
@@ -40,36 +42,103 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
         public Command<Location> EditLocation { get; }
         public Command<Location> ShowActionSheet { get; set; }
         public Command SaveChanges { get; }
+        public Func<Size> DimensionProvider { get; set; } = () => Size.Zero;
+
+        public SKBitmap CreateSchematicBitmap()
+        {
+            var size = DimensionProvider();
+            var bitmap = new SKBitmap((int) size.Width, (int) size.Height);
+
+            using var canvas = new SKCanvas(bitmap);
+            DrawSchematic(canvas, new SKRectI(0, 0, bitmap.Width, bitmap.Height));
+
+            return bitmap;
+        }
+
+        public void DrawSchematic(SKCanvas canvas, SKRectI targetRect, Location? selectedLocation = default)
+        {
+            canvas.Clear();
+
+            var report = Report;
+
+            if (report == null!)
+                return;
+
+            var schematicBitmap = _schematicBitmap;
+
+            if (schematicBitmap == null)
+                _schematicBitmap = schematicBitmap = SKBitmap.Decode(SchematicImagePath);
+
+            canvas.DrawBitmap(schematicBitmap, targetRect);
+
+            var reportLocations = report.Locations;
+
+            foreach (var location in reportLocations)
+            {
+                var fillColor = location == selectedLocation ? SKColors.Blue : SKColors.Red;
+                var strokeColor = fillColor;
+
+                using var circlePaint = new SKPaint
+                {
+                    Style = SKPaintStyle.Fill,
+                    Color = fillColor.WithAlpha(50),
+                    StrokeWidth = 2,
+                    IsAntialias = true
+                };
+
+                using var textPaint = new SKPaint
+                {
+                    Style = SKPaintStyle.StrokeAndFill,
+                    Color = SKColors.White,
+                    TextAlign = SKTextAlign.Center,
+                    TextSize = 30,
+                    StrokeWidth = 2,
+                    IsAntialias = true
+                };
+
+                canvas.DrawCircle(location.Left, location.Top, location.Radius, circlePaint);
+                circlePaint.Color = strokeColor.WithAlpha(30);
+                circlePaint.Style = SKPaintStyle.Stroke;
+                canvas.DrawCircle(location.Left, location.Top, location.Radius, circlePaint);
+
+                var text = location.Number.ToString();
+                var textBounds = new SKRect();
+                textPaint.MeasureText(text, ref textBounds);
+                var textHeight = textBounds.Height;
+
+                canvas.DrawText(location.Number.ToString(), location.Left, location.Top + textHeight / 2, textPaint);
+            }
+        }
 
         private async void LoadSchematicAsync()
         {
             if (Report == null!)
                 return;
-            
+
             SchematicImagePath = (await MediaService.GetMediaItemPathAsync(Report.SchematicMediaId))!;
         }
-        
+
         private async void OnAddLocationAsync(Point position)
         {
             var location = new Location
             {
                 Id = Guid.NewGuid().ToString("N"),
-                Left = (int)position.X,
-                Top = (int)position.Y,
+                Left = (int) position.X,
+                Top = (int) position.Y,
                 Radius = 100,
                 Number = Report!.Locations.Count + 1
             };
-            
+
             Report.Locations.Add(location);
             await ReportStore.UpdateAsync(Report);
             OnEditLocationAsync(location);
         }
-        
+
         private async void OnEditLocationAsync(Location location)
         {
-            await Shell.Current.GoToAsync($"{nameof(EditLocationPage)}?{nameof(EditLocationViewModel.ReportId)}={Report.Id}&{nameof(EditLocationViewModel.LocationId)}={location.Id}", true);    
+            await Shell.Current.GoToAsync($"{nameof(EditLocationPage)}?{nameof(EditLocationViewModel.ReportId)}={Report.Id}&{nameof(EditLocationViewModel.LocationId)}={location.Id}", true);
         }
-        
+
         private async void OnShowActionSheet(Location location)
         {
             var cancelAction = "Annuleren";

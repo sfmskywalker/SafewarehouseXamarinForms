@@ -20,7 +20,6 @@ namespace SafeWarehouseApp.Areas.Reports.Views
         private Location? _tappedLocation;
         private Location? _selectedLocation;
         private readonly Timer _pressAndHoldTimer;
-        private SKBitmap? _schematicBitmap;
 
         public EditReportLocationsPage()
         {
@@ -30,65 +29,17 @@ namespace SafeWarehouseApp.Areas.Reports.Views
 
         private EditReportLocationsViewModel ViewModel => (EditReportLocationsViewModel) BindingContext;
 
+        protected override void OnAppearing()
+        {
+            ViewModel.DimensionProvider = () => new Size(CanvasView.Width, CanvasView.Height);
+        }
+
         private void OnCanvasViewPaintSurface(object sender, SKPaintSurfaceEventArgs args)
         {
             var surface = args.Surface;
-            var canvas = surface.Canvas;
-
-            canvas.Clear();
-
-            var report = ViewModel.Report;
-
-            if (report == null!)
-                return;
-
-            var schematicBitmap = _schematicBitmap;
-
-            if (schematicBitmap == null) 
-                _schematicBitmap = schematicBitmap = SKBitmap.Decode(ViewModel.SchematicImagePath);
-
             var targetRect = args.Info.Rect;
-            
-            canvas.DrawBitmap(schematicBitmap, targetRect);
-            
-            var reportLocations = report.Locations;
-            var selectedLocation = _selectedLocation;
 
-            foreach (var location in reportLocations)
-            {
-                var fillColor = location == selectedLocation ? SKColors.Blue : SKColors.Red;
-                var strokeColor = fillColor;
-
-                using var circlePaint = new SKPaint 
-                {
-                    Style = SKPaintStyle.Fill,
-                    Color = fillColor.WithAlpha(50),
-                    StrokeWidth = 2,
-                    IsAntialias = true
-                };
-                
-                using var textPaint = new SKPaint
-                {
-                    Style = SKPaintStyle.StrokeAndFill,
-                    Color = SKColors.White,
-                    TextAlign = SKTextAlign.Center,
-                    TextSize = 30,
-                    StrokeWidth = 2,
-                    IsAntialias = true
-                };
-                
-                canvas.DrawCircle(location.Left, location.Top, location.Radius, circlePaint);
-                circlePaint.Color = strokeColor.WithAlpha(30);
-                circlePaint.Style = SKPaintStyle.Stroke;
-                canvas.DrawCircle(location.Left, location.Top, location.Radius, circlePaint);
-
-                var text = location.Number.ToString();
-                var textBounds = new SKRect();
-                textPaint.MeasureText(text, ref textBounds);
-                var textHeight = textBounds.Height;
-                
-                canvas.DrawText(location.Number.ToString(), location.Left, location.Top + textHeight / 2, textPaint);
-            }
+            ViewModel.DrawSchematic(surface.Canvas, targetRect, _selectedLocation);
         }
 
         private void OnPressAndHoldTimeoutReached(object state)
@@ -174,7 +125,7 @@ namespace SafeWarehouseApp.Areas.Reports.Views
                         return;
 
                     var moveThresholdReached = false;
-                    
+
                     if (_touchDictionary.ContainsKey(args.Id))
                     {
                         // Single-finger drag
@@ -196,7 +147,7 @@ namespace SafeWarehouseApp.Areas.Reports.Views
                         else if (_touchDictionary.Count >= 2)
                         {
                             moveThresholdReached = true;
-                                
+
                             // Copy two dictionary keys into array
                             var keys = new long[_touchDictionary.Count];
                             _touchDictionary.Keys.CopyTo(keys, 0);
@@ -235,8 +186,8 @@ namespace SafeWarehouseApp.Areas.Reports.Views
                         // Store the new point in the dictionary.
                         _touchDictionary[args.Id] = point;
                     }
-                    
-                    if(moveThresholdReached)
+
+                    if (moveThresholdReached)
                         _pressAndHoldTimer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
 
                     break;
@@ -247,6 +198,7 @@ namespace SafeWarehouseApp.Areas.Reports.Views
                         _touchDictionary.Remove(args.Id);
 
                     _pressAndHoldTimer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
+
                     Task.Run(() => ViewModel.SaveChanges.Execute(null));
 
                     break;

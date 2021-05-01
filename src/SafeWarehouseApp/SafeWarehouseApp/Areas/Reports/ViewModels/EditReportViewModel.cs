@@ -70,7 +70,11 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
         private async void OnCreatePdf()
         {
             var updatedBitmap = EditReportLocationsViewModel.CreateSchematicBitmap();
-            using var image = SKImage.FromBitmap(updatedBitmap);
+            var maxWidth = 750f;
+            var scale = maxWidth / updatedBitmap.Width;
+            var resizedBitmap = updatedBitmap.Resize(new SKSizeI((int)maxWidth, (int) (updatedBitmap.Height * scale)), SKFilterQuality.High);
+            
+            using var image = SKImage.FromBitmap(resizedBitmap);
             var buffer = image.Encode(SKEncodedImageFormat.Png, 100).ToArray();
             var paintedSchematicMediaItem = _report.PaintedSchematicMediaId != null ? await MediaService.GetMediaItemAsync(_report.PaintedSchematicMediaId) : default;
 

@@ -17,7 +17,6 @@ namespace SafeWarehouseApp
         public App()
         {
             InitializeComponent();
-            //Services = CreateServices();
             MainPage = new AppShell();
         }
 

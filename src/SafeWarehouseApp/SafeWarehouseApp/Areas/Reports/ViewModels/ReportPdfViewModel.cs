@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Forms9Patch;
 using SafeWarehouseApp.Models;
@@ -16,6 +17,7 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
         private readonly Func<Task<ToFileResult?>> _generatePdfDocument;
         private string _reportId = default!;
         private Report _report = default!;
+        private Customer _customer = default!;
         private HtmlWebViewSource _reportHtmlSource = default!;
 
         public ReportPdfViewModel(Func<Task<ToFileResult?>> generatePdfDocument)
@@ -48,7 +50,10 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
         public async void LoadItemId(string itemId)
         {
             var report = await ReportStore.FindAsync(itemId);
+            var customer = await CustomerStore.FindAsync(report!.CustomerId);
+            
             _report = report!;
+            _customer = customer!;
             Id = report!.Id;
 
             var html = await ReportHtmlGenerator.GenerateHtmlAsync(_report);
@@ -71,7 +76,9 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
                 var message = new EmailMessage
                 {
                     Subject = "Schaderapport",
-                    Body = "Zie bijlage.",
+                    Body = $"<p>Beste {_customer.ContactName},</p><p></p><p>Bijgevoegd vind je het schaderapport van {_report.Date.ToShortDateString()}.</p><p>Met vriendelijke groet,</p><p>Frans Hardus</p>",
+                    BodyFormat = EmailBodyFormat.Html,
+                    To = !string.IsNullOrWhiteSpace(_customer.Email) ? new List<string>{ _customer.Email } : new List<string>(0)
                 };
 
                 message.Attachments.Add(new EmailAttachment(fileResult.Result, "application/pdf"));

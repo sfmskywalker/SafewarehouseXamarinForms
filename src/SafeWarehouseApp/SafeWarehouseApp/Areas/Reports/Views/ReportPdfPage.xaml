@@ -8,7 +8,7 @@
              android:TabbedPage.IsSwipePagingEnabled="False"
              Title="Rapport">
     <ContentPage.ToolbarItems>
-        <ToolbarItem x:Name="ShareButton" Text="Share" Command="{Binding SendCommand}" />
+        <ToolbarItem x:Name="ShareButton" Text="Verstuur" Command="{Binding SendCommand}" />
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <WebView x:Name="WebView" Source="{Binding ReportHtmlSource}" />

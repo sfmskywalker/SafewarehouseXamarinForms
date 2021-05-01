@@ -27,7 +27,7 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
         private DamageType? _damageType;
         private Report _report = default!;
         private Location _location = default!;
-        
+
         public EditDamageViewModel()
         {
             SaveCommand = new Command(OnSave, ValidateSave);
@@ -38,7 +38,7 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
             DeleteDamagePictureCommand = new Command<DamagePictureViewModel>(OnDeleteDamagePicture);
             SelectPictureCommand = new Command<DamagePictureViewModel>(OnSelectPicture);
         }
-        
+
         public IList<DamagePictureSummaryViewModel> Pictures { get; set; } = new List<DamagePictureSummaryViewModel>();
         public IList<Material> Materials { get; private set; } = new List<Material>();
 
@@ -74,7 +74,7 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
                 LoadEntitiesAsync();
             }
         }
-        
+
         public string DamageId
         {
             get => _damageId;
@@ -115,32 +115,35 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
 
         private async void LoadDamageTypesAsync()
         {
-            var damageTypes = await DamageTypeStore.ListAsync();
+            var damageTypes = (await DamageTypeStore.ListAsync()).OrderBy(x => x.Name).ToList();
             DamageTypes.SetItems(damageTypes);
         }
-        
+
         private async void LoadMaterialsAsync()
         {
-            var materials = await MaterialStore.ListAsync();
-            Materials = materials.ToList();
+            var customerId = _report.CustomerId;
+            var customer = (await CustomerStore.FindAsync(customerId))!;
+            var supplierIds = customer.Suppliers;
+            var materials = await MaterialStore.FindManyAsync(x => supplierIds.Contains(x.SupplierId));
+            Materials = materials.OrderBy(x => x.Name).ToList();
             MaterialIds.SetItems(Materials.Select(x => x.Id));
         }
 
         private bool ValidateSave() => true;
         private async Task CloseAsync() => await Shell.Current.GoToAsync("..", true);
-        
+
         private async Task<MediaItem?> LoadPhotoAsync(FileResult? photo)
         {
             if (photo == null)
                 return null;
-            
+
             var mediaItem = await MediaService.CreateMediaItem(photo);
             mediaItem.Tag = ReportId;
-            
+
             await MediaItemStore.AddAsync(mediaItem);
             return mediaItem;
         }
-        
+
         private async Task SelectPhotoAsync(Func<Task<FileResult?>> picker, DamagePictureViewModel damagePicture)
         {
             try
@@ -148,7 +151,7 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
                 var photo = await picker();
                 var mediaItem = await LoadPhotoAsync(photo);
 
-                if (mediaItem != null) 
+                if (mediaItem != null)
                     damagePicture.PictureId = mediaItem.Id;
             }
             catch (Exception ex)
@@ -156,7 +159,7 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
                 Console.WriteLine($"SelectPhotoAsync threw: {ex.Message}");
             }
         }
-        
+
         private async Task BeginSelectPicture(DamagePictureViewModel damagePicture)
         {
             var cameraButton = "Camera";
@@ -177,7 +180,7 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
             {
                 Quantity = 1,
             };
-            
+
             RequiredMaterials.Add(requiredMaterial);
         }
 
@@ -194,8 +197,8 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
 
             var viewModel = new DamagePictureViewModel(damagePicture.Number, damagePicture.PictureId, damagePicture.Description);
             await BeginSelectPicture(viewModel);
-            
-            if(viewModel.PictureId != null)
+
+            if (viewModel.PictureId != null)
                 DamagePictures.Add(viewModel);
         }
 
@@ -208,7 +211,7 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
             var removedPictureIds = currentPictureIds.Where(x => !newPictureIds.Contains(x)).Select(x => x!).ToList();
 
             await MediaService.DeleteManyByIdAsync(removedPictureIds);
-            
+
             _damage.RequiredMaterials = RequiredMaterials.ToList();
             _damage.Pictures = DamagePictures.Select(x => x.ToModel()).ToList();
             _damage.DamageTypeId = SelectedDamageType?.Id;

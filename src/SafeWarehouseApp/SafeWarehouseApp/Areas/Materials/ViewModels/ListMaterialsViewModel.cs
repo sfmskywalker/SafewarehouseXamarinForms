@@ -17,6 +17,7 @@ namespace SafeWarehouseApp.Areas.Materials.ViewModels
     public class ListMaterialsViewModel : BaseViewModel
     {
         private IDictionary<string, Supplier>? _suppliers;
+        private string? _supplierId;
         private Supplier? _supplier;
 
         public ListMaterialsViewModel()
@@ -39,8 +40,15 @@ namespace SafeWarehouseApp.Areas.Materials.ViewModels
 
         public string? SupplierId
         {
-            get => _supplier?.Id;
-            set => LoadSupplier(value);
+            get => _supplierId;
+            set
+            {
+                if (_supplierId != value)
+                {
+                    _supplierId = value;
+                    LoadSupplier(value);
+                }
+            }
         }
 
         private async void LoadSupplier(string? id)
@@ -57,11 +65,14 @@ namespace SafeWarehouseApp.Areas.Materials.ViewModels
             await LoadAsync();
         }
 
-        public void OnAppearing()
+        public async void OnAppearing()
         {
             IsBusy = true;
             _supplier = null;
             _suppliers = null;
+            
+            if(SupplierId != null)
+                LoadSupplier(SupplierId);
         }
 
         private async Task<IDictionary<string, Supplier>> GetSuppliersAsync() => _suppliers ??= (await SupplierStore.ListAsync()).ToDictionary(x => x.Id);

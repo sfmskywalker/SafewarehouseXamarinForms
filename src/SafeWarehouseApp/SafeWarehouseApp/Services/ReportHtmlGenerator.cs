@@ -60,17 +60,25 @@ namespace SafeWarehouseApp.Services
                     {
                         Number = location.Number,
                         Description = location.Description,
-                        Damages = await Task.WhenAll(location.Damages.Select(async damage => new
+                        Damages = await Task.WhenAll(location.Damages.Select(async damage =>
                         {
-                            Number = damage.Number,
-                            DamageType = damageTypes.TryGet(damage.DamageTypeId)?.Name ?? "(onbekend)",
-                            RequiredMaterials = damage.RequiredMaterials.Select(x => materials.TryGet(x.MaterialId)).Where(x => x != null).Select(x => x!.Name).ToList(),
-                            DamagePictures = await Task.WhenAll(damage.Pictures.Select(async damagePicture => new
+                            var damagePictures = await Task.WhenAll(damage.Pictures.Select(async (damagePicture, damagePictureIndex) => new
                             {
-                                Number = damagePicture.Number,
+                                Number = damagePictureIndex + 1,
                                 Description = damagePicture.Description,
                                 PictureData = await GetDataUrlAsync(damagePicture.PictureId)
-                            }).ToList())
+                            }).ToList());
+
+                            var mainDamagePicture = damagePictures.FirstOrDefault();
+                            
+                            return new
+                            {
+                                Number = 1,
+                                DamageType = damageTypes.TryGet(damage.DamageTypeId)?.Name ?? "(onbekend)",
+                                RequiredMaterials = damage.RequiredMaterials.Select(x => materials.TryGet(x.MaterialId)).Where(x => x != null).Select(x => x!.Name).ToList(),
+                                MainDamagePicture = mainDamagePicture,
+                                DamagePictures = damagePictures
+                            };
                         }).ToList())
                     };
                 }).ToList()),

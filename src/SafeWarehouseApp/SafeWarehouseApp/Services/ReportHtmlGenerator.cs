@@ -54,26 +54,26 @@ namespace SafeWarehouseApp.Services
                 NextExaminationBefore = report.NextExaminationBefore?.ToString("dd-MM-yyyy"),
                 Remarks = report.Remarks,
                 SchematicData = await _mediaService.GetImageDataUrlAsync(schematic, cancellationToken),
-                Locations = await Task.WhenAll(locations.Select(async location =>
+                Locations = await Task.WhenAll(locations.Select(async (location, locationIndex) =>
                 {
                     return new
                     {
-                        Number = location.Number,
+                        Number = locationIndex + 1,
                         Description = location.Description,
-                        Damages = await Task.WhenAll(location.Damages.Select(async damage =>
+                        Damages = await Task.WhenAll(location.Damages.Select(async (damage, damageIndex) =>
                         {
                             var damagePictures = await Task.WhenAll(damage.Pictures.Select(async (damagePicture, damagePictureIndex) => new
                             {
                                 Number = damagePictureIndex + 1,
                                 Description = damagePicture.Description,
-                                PictureData = await GetDataUrlAsync(damagePicture.PictureId)
+                                PictureData = await GetDataUrlAsync(damagePicture.PictureId, 300)
                             }).ToList());
 
                             var mainDamagePicture = damagePictures.FirstOrDefault();
                             
                             return new
                             {
-                                Number = 1,
+                                Number = damageIndex + 1,
                                 DamageType = damageTypes.TryGet(damage.DamageTypeId)?.Name ?? "(onbekend)",
                                 RequiredMaterials = damage.RequiredMaterials.Select(x => materials.TryGet(x.MaterialId)).Where(x => x != null).Select(x => x!.Name).ToList(),
                                 MainDamagePicture = mainDamagePicture,
@@ -93,10 +93,16 @@ namespace SafeWarehouseApp.Services
             return compiledTemplate(model);
         }
         
-        private async Task<string?> GetDataUrlAsync(string? mediaItemId)
+        private async Task<string?> GetDataUrlAsync(string? mediaItemId, int maxWidth)
         {
-            var file = mediaItemId is not null and not "" ? await _mediaService.GetMediaItemAsync(mediaItemId) : default;
-            return file != null ? await _mediaService.GetImageDataUrlAsync(file) : default;
+            var mediaItem = mediaItemId is not null and not "" ? await _mediaService.GetMediaItemAsync(mediaItemId) : default;
+
+            if (mediaItem == null)
+                return null;
+            
+            var scaledBitmap = _mediaService.GetResizedImage(mediaItem, maxWidth);
+            var data = scaledBitmap.Encode(SKEncodedImageFormat.Jpeg, 100);
+            return data.ToArray().GetDataUrl(mediaItem.ContentType);
         }
     }
 }

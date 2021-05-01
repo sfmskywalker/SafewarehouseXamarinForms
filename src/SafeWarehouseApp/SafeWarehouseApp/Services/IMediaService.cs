@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using SafeWarehouseApp.Models;
+using SkiaSharp;
 using Xamarin.Essentials;
 
 namespace SafeWarehouseApp.Services
@@ -19,5 +21,7 @@ namespace SafeWarehouseApp.Services
         Task DeleteManyByTagAsync(string tag);
         Task DeleteManyByIdAsync(IEnumerable<string> ids);
         Task<string> GetImageDataUrlAsync(MediaItem mediaItem, CancellationToken cancellationToken = default);
+        SKFileStream GetImageStream(MediaItem mediaItem);
+        SKBitmap GetResizedImage(MediaItem mediaItem, int maxWidth);
     }
 }

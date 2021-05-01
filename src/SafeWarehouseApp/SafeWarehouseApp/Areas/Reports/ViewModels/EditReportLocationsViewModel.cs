@@ -84,8 +84,8 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
 
                 using var circlePaint = new SKPaint
                 {
-                    Style = SKPaintStyle.Fill,
-                    Color = fillColor.WithAlpha(50),
+                    Style = SKPaintStyle.StrokeAndFill,
+                    Color = fillColor.WithAlpha(85),
                     StrokeWidth = 2,
                     IsAntialias = true
                 };
@@ -104,9 +104,6 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
                 var locationTop = location.Top;
                 var locationRadius = location.Radius;
 
-                canvas.DrawCircle(locationLeft, locationTop, locationRadius, circlePaint);
-                circlePaint.Color = strokeColor.WithAlpha(30);
-                circlePaint.Style = SKPaintStyle.Stroke;
                 canvas.DrawCircle(locationLeft, locationTop, locationRadius, circlePaint);
 
                 var text = location.Number.ToString();

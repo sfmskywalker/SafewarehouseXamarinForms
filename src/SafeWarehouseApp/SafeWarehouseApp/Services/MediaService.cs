@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using SafeWarehouseApp.Extensions;
 using SafeWarehouseApp.Models;
 using SafeWarehouseApp.Persistence;
+using SkiaSharp;
 using Xamarin.Essentials;
 
 namespace SafeWarehouseApp.Services
@@ -86,8 +87,20 @@ namespace SafeWarehouseApp.Services
         {
             var fullPath = GetFullPath(mediaItem.FileName);
             var bytes = await File.ReadAllBytesAsync(fullPath, cancellationToken);
-            var base64 = Convert.ToBase64String(bytes);
-            return $"data:{mediaItem.ContentType};base64,{base64}";
+            return bytes.GetDataUrl(mediaItem.ContentType);
+        }
+        
+        public SKFileStream GetImageStream(MediaItem mediaItem)
+        {
+            var fullPath = GetFullPath(mediaItem.FileName);
+            return new SKFileStream(fullPath);
+        }
+
+        public SKBitmap GetResizedImage(MediaItem mediaItem, int maxWidth)
+        {
+            var stream = GetImageStream(mediaItem);
+            var bitmap = SKBitmap.Decode(stream);
+            return bitmap.Resize(maxWidth);
         }
 
         private async Task DeleteManyAsync(IEnumerable<MediaItem> mediaItems)

@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Threading.Tasks;
 using SafeWarehouseApp.Areas.Customers.Views;
+using SafeWarehouseApp.Areas.Reports.ViewModels;
+using SafeWarehouseApp.Areas.Reports.Views;
 using SafeWarehouseApp.Models;
 using SafeWarehouseApp.Persistence;
 using SafeWarehouseApp.ViewModels;
@@ -121,7 +123,7 @@ namespace SafeWarehouseApp.Areas.Customers.ViewModels
         {
             OnSave();
             await Shell.Current.Navigation.PopToRootAsync(false);
-            await Shell.Current.GoToAsync($"//{nameof(ListCustomersPage)}", true);
+            await Shell.Current.GoToAsync($"//{nameof(ListReportsPage)}?{nameof(ListReportsViewModel.CustomerId)}={CustomerId}", true);
         }
 
         private bool ValidateSave() => !string.IsNullOrWhiteSpace(_companyName);

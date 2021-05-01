@@ -18,6 +18,7 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
     public class ListReportsViewModel : BaseViewModel
     {
         private Customer? _customer;
+        private string? _customerId;
 
         public ListReportsViewModel()
         {
@@ -39,8 +40,12 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
 
         public string? CustomerId
         {
-            get => _customer?.Id;
-            set => LoadCustomerAsync(value);
+            get => _customerId;
+            set
+            {
+                _customerId = value;
+                LoadCustomerAsync(value);
+            }
         }
 
         private async void LoadCustomerAsync(string? id)
@@ -60,6 +65,9 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
         public void OnAppearing()
         {
             IsBusy = true;
+
+            if (CustomerId != null) 
+                LoadCustomerAsync(_customerId);
         }
 
         private async Task<IDictionary<string, Customer>> GetCustomersAsync() => (await CustomerStore.ListAsync()).ToDictionary(x => x.Id);

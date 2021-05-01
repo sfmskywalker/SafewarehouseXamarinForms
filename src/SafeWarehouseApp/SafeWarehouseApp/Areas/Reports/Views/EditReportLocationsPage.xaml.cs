@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -33,6 +34,12 @@ namespace SafeWarehouseApp.Areas.Reports.Views
         protected override void OnAppearing()
         {
             ViewModel.DimensionProvider = () => new Size(CanvasView.Width, CanvasView.Height);
+            ViewModel.PropertyChanged += OnViewModelPropertyChanged;
+        }
+
+        protected override void OnDisappearing()
+        {
+            ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
         }
 
         private void OnCanvasViewPaintSurface(object sender, SKPaintSurfaceEventArgs args)
@@ -119,7 +126,7 @@ namespace SafeWarehouseApp.Areas.Reports.Views
                     _lastTouchId = touchId;
                     _tappedLocation = tappedLocation;
                     _moveThresholdReached = false;
-                    _pressAndHoldTimer.Change(TimeSpan.FromSeconds(1), Timeout.InfiniteTimeSpan);
+                    _pressAndHoldTimer.Change(TimeSpan.FromMilliseconds(500), Timeout.InfiniteTimeSpan);
                     break;
 
                 case TouchActionType.Moved:
@@ -142,7 +149,7 @@ namespace SafeWarehouseApp.Areas.Reports.Views
                             location.Top += deltaY;
                             CanvasView.InvalidateSurface();
 
-                            if (deltaX >= 5 || deltaY >= 5)
+                            if (deltaX >= 1 || deltaY >= 1)
                                 _moveThresholdReached = true;
                         }
                         // Double-finger scale and drag
@@ -210,5 +217,7 @@ namespace SafeWarehouseApp.Areas.Reports.Views
                     break;
             }
         }
+        
+        private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e) => Device.BeginInvokeOnMainThread(() => CanvasView.InvalidateSurface());
     }
 }

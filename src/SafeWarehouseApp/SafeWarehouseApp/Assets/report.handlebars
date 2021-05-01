@@ -1,6 +1,5 @@
-﻿
-<link rel="stylesheet" href="pdf/tailwind.css" />
-<link rel="stylesheet" href="pdf/report.css"  />
+﻿<link rel="stylesheet" href="pdf/tailwind.css"/>
+<link rel="stylesheet" href="pdf/report.css"/>
 
 <div class="report">
     <!-- Customer & report details -->
@@ -34,35 +33,39 @@
     <div class="page">
         <div class="m-10">
             <div class="schematic">
-                <img src="{{SchematicData}}" alt="" />
+                <img src="{{SchematicData}}" alt=""/>
             </div>
         </div>
     </div>
 
     <!-- Damages overview -->
     <div class="page p-10">
+        <h2 class="font-bold text-lg">Overzicht</h2>
         <div class="grid grid-cols-3 gap-4">
             {{#each Locations}}
+                <div class="col-span-3">
+                    <p>Locatie <span class="font-bold">{{Number}}</span></p>
+                    <p>{{Description}}</p>
+                </div>
                 {{#each Damages}}
-                    {{#each DamagePictures}}
-                        <div>
-                            <div class="bg-gray-100 p-3">
-                                <img src="{{PictureData}}" alt="" />
+                    <div>
+                        {{#if MainDamagePicture}}
+                            <div class="bg-gray-100 main-damage-picture-container">
+                                <img src="{{MainDamagePicture.PictureData}}" alt=""/>
                             </div>
-                        </div>
-                        <div>
-                            <ul class="list-disc pl-5">
-                                {{#each ../RequiredMaterials}}
-                                    <li>{{this}}</li>
-                                {{/each}}
-                            </ul>
-                        </div>
-                        <div>
-                            <p><span class="font-bold">{{../../Number}}.{{../Number}}.{{Number}}</span></p>
-                            <p>{{../DamageType}}</p>
-                            <p>{{../../Description}}</p>
-                        </div>
-                    {{/each}}
+                        {{/if}}
+                    </div>
+                    <div>
+                        <ul class="list-disc pl-5">
+                            {{#each ../RequiredMaterials}}
+                                <li>{{this}}</li>
+                            {{/each}}
+                        </ul>
+                    </div>
+                    <div>
+                        <p><span class="font-bold">{{../Number}}.{{Number}}</span></p>
+                        <p>{{DamageType}}</p>
+                    </div>
                 {{/each}}
             {{/each}}
         </div>
@@ -72,17 +75,23 @@
     <div class="page p-10">
         <div class="grid grid-cols-2 gap-4">
             {{#each Locations}}
+                <div class="col-span-2">
+                    <h2 class="font-bold text-lg">Locatie {{Number}}</h2>
+                    <p>{{Description}}</p>
+                </div>
                 {{#each Damages}}
+                    <div class="col-span-2">
+                        <p>Schade <span class="font-bold">{{../Number}}.{{Number}}</span></p>
+                        <p>{{DamageType}}</p>
+                    </div>
                     {{#each DamagePictures}}
                         <div>
                             <div class="bg-gray-100 p-3">
-                                <img src="{{PictureData}}" alt="" />
+                                <img src="{{PictureData}}" alt=""/>
                             </div>
                         </div>
                         <div>
                             <p><span class="font-bold">{{../../Number}}.{{../Number}}.{{Number}}</span></p>
-                            <p>{{../DamageType}}</p>
-                            <p>{{../../Description}}</p>
                             <p>{{Description}}</p>
                         </div>
                     {{/each}}
@@ -93,6 +102,7 @@
 
     <!-- Damages details -->
     <div class="page p-10">
+        <h2 class="font-bold text-lg">Materialen</h2>
         <div class="mx-auto max-w-full">
             <div class="grid grid-cols-6 gap-4 text-center">
                 <div class="font-bold col-span-1">Aantal</div>

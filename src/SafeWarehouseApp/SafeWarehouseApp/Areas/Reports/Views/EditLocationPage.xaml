@@ -3,12 +3,11 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SafeWarehouseApp.Areas.Reports.Views.EditLocationPage"
-             Shell.PresentationMode="ModalAnimated"
+             Shell.PresentationMode="Animated"
              Title="Locatie"
              xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
              xmlns:converters="clr-namespace:SafeWarehouseApp.Converters;assembly=SafeWarehouseApp"
              xmlns:behaviors="clr-namespace:SafeWarehouseApp.Behaviors;assembly=SafeWarehouseApp"
-             xmlns:viewModels="clr-namespace:SafeWarehouseApp.Areas.Reports.ViewModels;assembly=SafeWarehouseApp"
              ios:Page.UseSafeArea="true">
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -43,9 +42,8 @@
                     </ListView.Behaviors>
                 </ListView>
             </StackLayout>
-            <StackLayout Orientation="Horizontal">
-                <Button Text="Annuleren" Command="{Binding CancelCommand}" HorizontalOptions="FillAndExpand" />
-                <Button Text="Opslaan" Command="{Binding SaveCommand}" HorizontalOptions="FillAndExpand" />
+            <StackLayout Orientation="Horizontal" HorizontalOptions="End">
+                <Button Text="Opslaan" Command="{Binding SaveCommand}" HorizontalOptions="Fill" />
             </StackLayout>
         </StackLayout>
     </ContentPage.Content>

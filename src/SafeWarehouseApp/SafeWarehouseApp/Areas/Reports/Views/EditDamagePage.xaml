@@ -3,14 +3,11 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SafeWarehouseApp.Areas.Reports.Views.EditDamagePage"
-             Shell.PresentationMode="ModalAnimated"
+             Shell.PresentationMode="Animated"
              Title="Locatie"
              x:Name="Page"
              xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
              xmlns:converters="clr-namespace:SafeWarehouseApp.Converters;assembly=SafeWarehouseApp"
-             xmlns:behaviors="clr-namespace:SafeWarehouseApp.Behaviors;assembly=SafeWarehouseApp"
-             xmlns:models="clr-namespace:SafeWarehouseApp.Models;assembly=SafeWarehouseApp"
-             xmlns:viewModels="clr-namespace:SafeWarehouseApp.Areas.Reports.ViewModels;assembly=SafeWarehouseApp"
              ios:Page.UseSafeArea="true">
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -20,75 +17,71 @@
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
-        <StackLayout Spacing="15" Padding="15">
-            <Label FormattedText="{Binding Damage.Number, StringFormat='Nummer: {0}' }" FontSize="Medium" />
-            <StackLayout>
-                <Label Text="Schadesoort" FontSize="Medium" />
-                <Picker x:Name="DamageTypePicker"
+        <StackLayout Spacing="15" Padding="15" VerticalOptions="FillAndExpand">
+            <ScrollView>
+                <StackLayout Spacing="15" VerticalOptions="FillAndExpand">
+                    <Label FormattedText="{Binding Damage.Number, StringFormat='Nummer: {0}' }" FontSize="Medium" />
+                    <StackLayout>
+                        <Label Text="Type schade" FontSize="Medium" />
+                        <Picker x:Name="DamageTypePicker"
                         Title="Selecteer een schadesoort"
                         ItemsSource="{Binding DamageTypes}"
                         ItemDisplayBinding="{Binding Name}"
                         SelectedItem="{Binding SelectedDamageType, Mode=TwoWay}" />
-            </StackLayout>
-            <StackLayout Orientation="Vertical">
-                <Label Text="Materialen" FontSize="Medium" />
-                <ListView x:Name="RequiredMaterialsListView"
-                          ItemsSource="{Binding RequiredMaterials}"
-                          SelectionMode="None"
-                          VerticalOptions="Start">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <ViewCell>
-                                <StackLayout Orientation="Horizontal">
-                                    <Picker Title="Selecteer Materiaal"
+                    </StackLayout>
+                    <StackLayout Orientation="Vertical">
+                        <Label Text="Materialen" FontSize="Medium" />
+                        <StackLayout x:Name="RequiredMaterialsListView" BindableLayout.ItemsSource="{Binding RequiredMaterials}" VerticalOptions="Start">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate>
+                                    <ViewCell>
+                                        <StackLayout Orientation="Horizontal">
+                                            <Picker Title="Selecteer Materiaal"
                                             ItemsSource="{Binding Path=BindingContext.MaterialIds, Source={x:Reference Page}}"
                                             ItemDisplayBinding="{Binding ., Converter={StaticResource MaterialDisplayConverter}, ConverterParameter={x:Reference Page}}"
                                             SelectedItem="{Binding MaterialId, Mode=TwoWay}" />
-                                    <Entry Keyboard="Numeric" Text="{Binding Quantity}" HorizontalOptions="FillAndExpand" />
-                                    <Button Text="Verwijderen" Command="{Binding Path=BindingContext.DeleteRequiredMaterialCommand, Source={x:Reference Name=RequiredMaterialsListView}}" CommandParameter="{Binding .}" />
-                                </StackLayout>
-                            </ViewCell>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-                <StackLayout VerticalOptions="StartAndExpand">
-                    <Button Text="Materiaal Toevoegen" Command="{Binding AddRequiredMaterialCommand}" HorizontalOptions="Start" />
-                </StackLayout>
-            </StackLayout>
-            <StackLayout Orientation="Vertical">
-                <Label Text="Foto's" FontSize="Medium" />
-                <ListView x:Name="DamagePicturesListView"
-                          ItemsSource="{Binding DamagePictures}"
-                          SelectionMode="None"
-                          VerticalOptions="Start">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <ViewCell>
-                                <StackLayout Orientation="Horizontal">
-                                    <ImageButton Source="{Binding PictureId, Converter={StaticResource PictureDisplayConverter}, ConverterParameter={x:Reference Page}}"
+                                            <Entry Keyboard="Numeric" Text="{Binding Quantity}" HorizontalOptions="FillAndExpand" />
+                                            <Button Text="Verwijderen" Command="{Binding Path=BindingContext.DeleteRequiredMaterialCommand, Source={x:Reference Name=RequiredMaterialsListView}}" CommandParameter="{Binding .}" />
+                                        </StackLayout>
+                                    </ViewCell>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </StackLayout>
+                        <Button Text="Materiaal Toevoegen" Command="{Binding AddRequiredMaterialCommand}" HorizontalOptions="Start" />
+                    </StackLayout>
+                    <StackLayout Orientation="Vertical" VerticalOptions="FillAndExpand">
+                        <Label Text="Foto's" FontSize="Medium" />
+                        <StackLayout x:Name="DamagePicturesListView" BindableLayout.ItemsSource="{Binding DamagePictures}" VerticalOptions="Start">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate>
+                                    <ViewCell>
+                                        <StackLayout Orientation="Horizontal">
+                                            <ImageButton Source="{Binding PictureId, Converter={StaticResource PictureDisplayConverter}, ConverterParameter={x:Reference Page}}"
                                                  Command="{Binding Path=BindingContext.SelectPictureCommand, Source={x:Reference Name=DamagePicturesListView}}" CommandParameter="{Binding .}"
                                                  BackgroundColor="Gray"
                                                  Aspect="AspectFill"
                                                  WidthRequest="100" />
-                                        <Entry Keyboard="Text" Text="{Binding Description}" HorizontalOptions="FillAndExpand" Placeholder="Omschrijving" WidthRequest="400" />
-                                        <Button Text="Verwijderen" Command="{Binding Path=BindingContext.DeleteDamagePictureCommand, Source={x:Reference Name=DamagePicturesListView}}" CommandParameter="{Binding .}" />
-                                </StackLayout>
-                                <ViewCell.ContextActions>
-                                    <MenuItem Command="{Binding Path=BindingContext.DeleteDamagePictureCommand, Source={x:Reference Name=DamagePicturesListView}}" CommandParameter="{Binding .}" Text="Verwijderen" IsDestructive="True" />
-                                </ViewCell.ContextActions>
-                            </ViewCell>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-                <StackLayout VerticalOptions="StartAndExpand">
-                    <Button Text="Foto Toevoegen" Command="{Binding AddDamagePictureCommand}" HorizontalOptions="Start" />
+                                            <Entry Keyboard="Text" Text="{Binding Description}" HorizontalOptions="FillAndExpand" Placeholder="Omschrijving" WidthRequest="400" />
+                                            <Button Text="Verwijderen" Command="{Binding Path=BindingContext.DeleteDamagePictureCommand, Source={x:Reference Name=DamagePicturesListView}}" CommandParameter="{Binding .}" />
+                                        </StackLayout>
+                                        <ViewCell.ContextActions>
+                                            <MenuItem Command="{Binding Path=BindingContext.DeleteDamagePictureCommand, Source={x:Reference Name=DamagePicturesListView}}" CommandParameter="{Binding .}" Text="Verwijderen" IsDestructive="True" />
+                                        </ViewCell.ContextActions>
+                                    </ViewCell>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </StackLayout>
+                        <StackLayout VerticalOptions="StartAndExpand">
+                            <Button Text="Foto Toevoegen" Command="{Binding AddDamagePictureCommand}" HorizontalOptions="Start" />
+                        </StackLayout>
+                    </StackLayout>
                 </StackLayout>
-            </StackLayout>
+            </ScrollView>
             <StackLayout Orientation="Horizontal">
-                <Button Text="Annuleren" Command="{Binding CancelCommand}" HorizontalOptions="FillAndExpand" />
                 <Button Text="Opslaan" Command="{Binding SaveCommand}" HorizontalOptions="FillAndExpand" />
             </StackLayout>
         </StackLayout>
+        
     </ContentPage.Content>
 
 </ContentPage>

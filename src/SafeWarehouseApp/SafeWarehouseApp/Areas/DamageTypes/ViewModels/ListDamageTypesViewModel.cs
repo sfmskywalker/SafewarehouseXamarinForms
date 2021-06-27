@@ -22,7 +22,7 @@ namespace SafeWarehouseApp.Areas.DamageTypes.ViewModels
 
         public ListDamageTypesViewModel()
         {
-            Title = "Schadesoorten";
+            Title = "Type schades";
             Items = new ObservableCollection<DamageType>();
             LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
             ItemSelected = new Command<DamageType>(OnItemSelected);

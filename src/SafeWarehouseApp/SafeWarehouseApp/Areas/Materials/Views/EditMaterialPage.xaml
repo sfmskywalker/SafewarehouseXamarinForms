@@ -8,7 +8,7 @@
     <ContentPage.Content>
         <StackLayout Spacing="15" Padding="15">
             <StackLayout>
-                <Label Text="Naam" FontSize="Medium" />
+                <Label Text="Naam materiaal" FontSize="Medium" />
                 <Entry Text="{Binding Name, Mode=TwoWay}" FontSize="Medium" ReturnCommand="{Binding SaveCommand}" />
             </StackLayout>
 
@@ -20,9 +20,8 @@
                         ItemDisplayBinding="{Binding Name}"
                         SelectedItem="{Binding SelectedSupplier}" />
             </StackLayout>
-            
+
             <StackLayout Orientation="Horizontal">
-                <Button Text="Annuleren" Command="{Binding CancelCommand}" HorizontalOptions="FillAndExpand" />
                 <Button Text="Opslaan" Command="{Binding SaveCommand}" HorizontalOptions="FillAndExpand" />
             </StackLayout>
         </StackLayout>

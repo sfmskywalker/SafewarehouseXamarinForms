@@ -1,8 +1,10 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
-using System.Threading;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
+using SafeWarehouseApp.Extensions;
 using SafeWarehouseApp.Models;
+using SafeWarehouseApp.Persistence;
 using SafeWarehouseApp.ViewModels;
 using Xamarin.Forms;
 
@@ -11,15 +13,15 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
     public class EditReportMetadataViewModel : BaseViewModel
     {
         private Report? _report;
+        private string? _customerId;
+        private Customer? _selectedCustomer;
         private string? _remarks;
         private DateTime? _reportDate;
         private DateTime? _nextExaminationBefore;
-        private readonly Timer _updateTimer;
 
         public EditReportMetadataViewModel()
         {
             SaveChanges = new Command(OnSaveChangesAsync);
-            _updateTimer = new Timer(OnUpdateTimerTick);
         }
 
         public Report Report
@@ -28,10 +30,17 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
             set
             {
                 SetProperty(ref _report, value);
+                CustomerId = value.CustomerId;
                 Remarks = value.Remarks;
                 ReportDate = value.Date;
                 NextExaminationBefore = value.NextExaminationBefore;
             }
+        }
+
+        public string? CustomerId
+        {
+            get => _customerId;
+            set => SetProperty(ref _customerId, value);
         }
 
         public string? Remarks
@@ -52,22 +61,28 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
             set => SetProperty(ref _nextExaminationBefore, value);
         }
 
-        public Command SaveChanges { get; }
-
-        protected override async void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        public Customer? SelectedCustomer
         {
-            if (propertyName == nameof(Remarks))
-                _updateTimer.Change(TimeSpan.FromSeconds(1), Timeout.InfiniteTimeSpan);
-            else
-                await SaveChangesAsync();
-            
-            base.OnPropertyChanged(propertyName);
+            get => _selectedCustomer;
+            set => SetProperty(ref _selectedCustomer, value);
         }
 
-        private void OnUpdateTimerTick(object state) => OnSaveChangesAsync();
-        
+        public ObservableCollection<Customer> Customers { get; } = new();
+
+        public Command SaveChanges { get; }
+
+        public async void OnAppearing()
+        {
+            var customers = (await CustomerStore.ListAsync(q => q.OrderBy(x => x.CompanyName))).ToList();
+            Customers.SetItems(customers);
+
+            if (!string.IsNullOrWhiteSpace(CustomerId))
+                SelectedCustomer = customers.FirstOrDefault(x => x.Id == CustomerId);
+        }
+
         private async Task SaveChangesAsync()
         {
+            Report.CustomerId = SelectedCustomer?.Id;
             Report.Remarks = Remarks?.Trim();
             Report.Date = ReportDate ?? Report.Date;
             Report.NextExaminationBefore = NextExaminationBefore;

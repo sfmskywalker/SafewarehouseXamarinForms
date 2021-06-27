@@ -25,7 +25,7 @@ namespace SafeWarehouseApp.Areas.Customers.ViewModels
             PropertyChanged += (_, __) => SaveCommand.ChangeCanExecute();
         }
 
-        private bool ValidateSave() => !string.IsNullOrWhiteSpace(_companyName);
+        private bool ValidateSave() => !string.IsNullOrWhiteSpace(_companyName) && !string.IsNullOrWhiteSpace(_email);
 
         public string CompanyName
         {

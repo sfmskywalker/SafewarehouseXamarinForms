@@ -18,9 +18,15 @@ namespace SafeWarehouseApp.Areas.Materials.ViewModels
 
         public NewMaterialViewModel()
         {
-            SaveCommand = new Command(OnSave, ValidateSave);
+            SaveAndCloseCommand = new Command(OnSaveAndClose, ValidateSave);
+            SaveAndNewCommand = new Command(OnSaveAndNew, ValidateSave);
             CancelCommand = new Command(OnCancel);
-            PropertyChanged += (_, __) => SaveCommand.ChangeCanExecute();
+
+            PropertyChanged += (_, __) =>
+            {
+                SaveAndCloseCommand.ChangeCanExecute();
+                SaveAndNewCommand.ChangeCanExecute();
+            };
         }
 
         public string Name
@@ -39,10 +45,24 @@ namespace SafeWarehouseApp.Areas.Materials.ViewModels
 
         public ObservableCollection<Supplier> Suppliers { get; } = new();
 
-        public Command SaveCommand { get; }
+        public Command SaveAndCloseCommand { get; }
+        public Command SaveAndNewCommand { get; }
         public Command CancelCommand { get; }
         
         private bool ValidateSave() => !string.IsNullOrWhiteSpace(_name) && SelectedSupplier != null;
+
+        private async Task SaveAsync()
+        {
+            var newItem = new Material
+            {
+                Id = Guid.NewGuid().ToString("N"),
+                SupplierId = SelectedSupplier!.Id,
+                Name = Name.Trim(),
+            };
+
+            await MaterialStore.AddAsync(newItem);
+        }
+
         public async void OnAppearing()
         {
             var suppliers = (await SupplierStore.ListAsync(q => q.OrderBy(x => x.Name))).ToList();
@@ -54,17 +74,16 @@ namespace SafeWarehouseApp.Areas.Materials.ViewModels
 
         private async void OnCancel() => await CloseAsync();
 
-        private async void OnSave()
+        private async void OnSaveAndClose()
         {
-            var newItem = new Material
-            {
-                Id = Guid.NewGuid().ToString("N"),
-                SupplierId = SelectedSupplier!.Id,
-                Name = Name.Trim(),
-            };
-
-            await MaterialStore.AddAsync(newItem);
+            await SaveAsync();
             await CloseAsync();
+        }
+
+        private async void OnSaveAndNew()
+        {
+            await SaveAsync();
+            Name = "";
         }
 
         private async Task CloseAsync() => await Shell.Current.GoToAsync("..");

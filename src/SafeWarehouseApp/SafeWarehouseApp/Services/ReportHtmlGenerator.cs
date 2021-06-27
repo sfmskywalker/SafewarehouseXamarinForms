@@ -75,14 +75,14 @@ namespace SafeWarehouseApp.Services
                             {
                                 Number = damageIndex + 1,
                                 DamageType = damageTypes.TryGet(damage.DamageTypeId)?.Name ?? "(onbekend)",
-                                RequiredMaterials = damage.RequiredMaterials.Select(x => materials.TryGet(x.MaterialId)).Where(x => x != null).Select(x => x!.Name).ToList(),
+                                RequiredMaterials = damage.RequiredMaterials.Where(x => !string.IsNullOrEmpty(x.MaterialId)).Select(x => materials.TryGet(x.MaterialId)).Where(x => x != null).Select(x => x!.Name).ToList(),
                                 MainDamagePicture = mainDamagePicture,
                                 DamagePictures = damagePictures
                             };
                         }).ToList())
                     };
                 }).ToList()),
-                RequiredMaterials = requiredMaterials.Select(requiredMaterial => new
+                RequiredMaterials = requiredMaterials.Where(x => !string.IsNullOrEmpty(x.MaterialId)).Select(requiredMaterial => new
                 {
                     Material = materials.TryGet(requiredMaterial.MaterialId)?.Name ?? "(onbekend)",
                     Quantity = requiredMaterial.Quantity

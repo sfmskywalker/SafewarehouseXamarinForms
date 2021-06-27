@@ -15,7 +15,7 @@ namespace SafeWarehouseApp.Droid
         MainLauncher = true,
         ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize, ScreenOrientation = ScreenOrientation.FullSensor
     )]
-    public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
+    public class MainActivity : Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -29,15 +29,16 @@ namespace SafeWarehouseApp.Droid
             var services = new ServiceCollection();
 
             services.AddSingleton<IBaseUrlProvider, AndroidBaseUrlProvider>();
+            services.AddSingleton<IMediaGallery, AndroidMediaGallery>();
             app.ConfigureServices(services);
-            
+
             var serviceProvider = services.BuildServiceProvider();
             App.Services = serviceProvider;
-            
+
             LoadApplication(app);
         }
 
-        public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
+        public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)
         {
             Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
 

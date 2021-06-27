@@ -8,7 +8,6 @@ using SafeWarehouseApp.Models;
 using SafeWarehouseApp.Persistence;
 using SafeWarehouseApp.Persistence.Stores;
 using SafeWarehouseApp.Services;
-using Xamarin.Forms;
 
 namespace SafeWarehouseApp
 {
@@ -47,7 +46,7 @@ namespace SafeWarehouseApp
             var factory = Services.GetRequiredService<IDbContextFactory<SafeWarehouseContext>>();
             using var dbContext = factory.CreateDbContext();
             dbContext.Database.Migrate();
-            
+
             var nl = CultureInfo.CreateSpecificCulture("nl-NL");
             CultureInfo.DefaultThreadCurrentCulture = nl;
             CultureInfo.DefaultThreadCurrentUICulture = nl;

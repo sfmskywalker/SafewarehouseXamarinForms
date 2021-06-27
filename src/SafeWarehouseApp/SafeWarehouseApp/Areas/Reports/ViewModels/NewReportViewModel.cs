@@ -52,7 +52,7 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
                 SelectedCustomer = customers.FirstOrDefault(x => x.Id == CustomerId);
         }
         
-        private bool ValidateSave() => SelectedCustomer != null;
+        private bool ValidateSave() => true;
 
         private async Task LoadPhotoAsync(FileResult? photo)
         {
@@ -87,7 +87,7 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
             {
                 Id = Guid.NewGuid().ToString("N"),
                 Date = DateTime.Now,
-                CustomerId = SelectedCustomer!.Id,
+                CustomerId = SelectedCustomer?.Id,
                 SchematicMediaId = schematicMediaId
             };
 

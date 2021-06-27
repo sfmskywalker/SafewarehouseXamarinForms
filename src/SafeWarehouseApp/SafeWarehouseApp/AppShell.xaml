@@ -89,7 +89,7 @@
     <FlyoutItem Title="Klanten">
         <ShellContent Route="ListCustomersPage" ContentTemplate="{DataTemplate customers:ListCustomersPage}" />
     </FlyoutItem>
-    <FlyoutItem Title="Schadesoorten">
+    <FlyoutItem Title="Type schades">
         <ShellContent Route="ListDamageTypesPage" ContentTemplate="{DataTemplate damageTypes:ListDamageTypesPage}" />
     </FlyoutItem>
     <FlyoutItem Title="Materialen">

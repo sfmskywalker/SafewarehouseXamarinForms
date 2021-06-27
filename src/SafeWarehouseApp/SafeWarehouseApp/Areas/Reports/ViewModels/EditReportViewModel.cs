@@ -46,6 +46,11 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
         public Command CancelCommand { get; }
         public Command CreatePdfCommand { get; }
 
+        public void OnAppearing()
+        {
+            EditReportMetadataViewModel.OnAppearing();
+        }
+
         public async void LoadItemId(string itemId)
         {
             var report = await ReportStore.FindAsync(itemId);

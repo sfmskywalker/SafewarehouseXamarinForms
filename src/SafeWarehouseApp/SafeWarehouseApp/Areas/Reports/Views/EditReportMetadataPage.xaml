@@ -6,6 +6,14 @@
             Title="Meta">
     <StackLayout Spacing="15" Padding="15">
         <StackLayout>
+            <Label Text="Klant" FontSize="Medium" />
+            <Picker x:Name="CustomerPicker"
+                    Title="Selecteer een klant"
+                    ItemsSource="{Binding Customers}"
+                    ItemDisplayBinding="{Binding CompanyName}"
+                    SelectedItem="{Binding SelectedCustomer, Mode=TwoWay}" />
+        </StackLayout>
+        <StackLayout>
             <Label Text="Opmerkingen" FontSize="Medium" />
             <Entry Text="{Binding Remarks, Mode=TwoWay}" FontSize="Medium" />
         </StackLayout>
@@ -16,6 +24,9 @@
         <StackLayout>
             <Label Text="Volgende keuring voor" FontSize="Medium" />
             <DatePicker Date="{Binding NextExaminationBefore, Mode=TwoWay}" FontSize="Medium" />
+        </StackLayout>
+        <StackLayout Orientation="Horizontal" HorizontalOptions="End">
+            <Button Text="Opslaan" Command="{Binding SaveChanges}" HorizontalOptions="Fill"></Button>
         </StackLayout>
     </StackLayout>
 </ContentPage>

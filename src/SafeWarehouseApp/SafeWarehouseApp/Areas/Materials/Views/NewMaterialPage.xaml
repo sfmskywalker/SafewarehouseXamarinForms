@@ -2,14 +2,14 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SafeWarehouseApp.Areas.Materials.Views.NewMaterialPage"
-             Shell.PresentationMode="ModalAnimated"
+             Shell.PresentationMode="Animated"
              Title="Nieuw Materiaal"
              xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
              ios:Page.UseSafeArea="true">
     <ContentPage.Content>
         <StackLayout Spacing="15" Padding="15">
             <StackLayout>
-                <Label Text="Naam" FontSize="Medium" />
+                <Label Text="Naam materiaal" FontSize="Medium" />
                 <Entry Text="{Binding Name, Mode=TwoWay}" FontSize="Medium" ReturnCommand="{Binding SaveCommand}" />
             </StackLayout>
             
@@ -21,10 +21,10 @@
                         ItemDisplayBinding="{Binding Name}"
                         SelectedItem="{Binding SelectedSupplier}" />
             </StackLayout>
-            
+
             <StackLayout Orientation="Horizontal">
-                <Button Text="Annuleren" Command="{Binding CancelCommand}" HorizontalOptions="FillAndExpand"></Button>
-                <Button Text="Opslaan" Command="{Binding SaveCommand}" HorizontalOptions="FillAndExpand"></Button>
+                <Button Text="Opslaan &amp; Sluiten" Command="{Binding SaveAndCloseCommand}" HorizontalOptions="Fill"></Button>
+                <Button Text="Opslaan &amp; Nieuw" Command="{Binding SaveAndNewCommand}" HorizontalOptions="Fill"></Button>
             </StackLayout>
         </StackLayout>
     </ContentPage.Content>

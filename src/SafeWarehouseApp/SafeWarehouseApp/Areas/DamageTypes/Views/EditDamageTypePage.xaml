@@ -2,15 +2,15 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SafeWarehouseApp.Areas.DamageTypes.Views.EditDamageTypePage"
-             Title="{Binding Title}">
+             Title="Type Schade">
 
     <ContentPage.Content>
         <StackLayout Spacing="3" Padding="15">
-            <Label Text="Naam" FontSize="Medium" />
+            <Label Text="Naam type schade" FontSize="Medium" />
             <Entry Text="{Binding DisplayName, Mode=TwoWay}" FontSize="Medium" ReturnCommand="{Binding SaveCommand}"/>
-                <StackLayout Orientation="Horizontal">
-                <Button Text="Annuleren" Command="{Binding CancelCommand}" HorizontalOptions="FillAndExpand"></Button>
-                <Button Text="Opslaan" Command="{Binding SaveCommand}" HorizontalOptions="FillAndExpand"></Button>
+                <StackLayout Orientation="Horizontal" HorizontalOptions="End">
+                <Button Text="Annuleren" Command="{Binding CancelCommand}" HorizontalOptions="Fill"></Button>
+                <Button Text="Opslaan" Command="{Binding SaveCommand}" HorizontalOptions="Fill"></Button>
             </StackLayout>
         </StackLayout>
     </ContentPage.Content>

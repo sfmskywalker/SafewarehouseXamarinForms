@@ -8,6 +8,15 @@
     page-break-after: always;
 }
 
+table {
+    page-break-inside: auto
+}
+
+tr.auto-break {
+    page-break-inside: avoid;
+    page-break-after: auto
+}
+
 .schematic {
     position: relative;
 }

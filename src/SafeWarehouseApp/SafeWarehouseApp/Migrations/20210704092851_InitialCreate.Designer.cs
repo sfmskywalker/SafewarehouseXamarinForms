@@ -9,7 +9,7 @@ using SafeWarehouseApp.Persistence;
 namespace SafeWarehouseApp.Migrations
 {
     [DbContext(typeof(SafeWarehouseContext))]
-    [Migration("20210425191659_InitialCreate")]
+    [Migration("20210704092851_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -109,7 +109,6 @@ namespace SafeWarehouseApp.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("CustomerId")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("Date")

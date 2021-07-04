@@ -40,24 +40,24 @@ namespace SafeWarehouseApp
                 .AddSingleton<IReportHtmlGenerator, ReportHtmlGenerator>();
         }
 
+        public void BeforeStart()
+        {
+            MigrateDb();
+        }
+
         protected override void OnStart()
         {
-            using var scope = Services.CreateScope();
-            var factory = Services.GetRequiredService<IDbContextFactory<SafeWarehouseContext>>();
-            using var dbContext = factory.CreateDbContext();
-            dbContext.Database.Migrate();
-
             var nl = CultureInfo.CreateSpecificCulture("nl-NL");
             CultureInfo.DefaultThreadCurrentCulture = nl;
             CultureInfo.DefaultThreadCurrentUICulture = nl;
         }
 
-        protected override void OnSleep()
+        private void MigrateDb()
         {
-        }
-
-        protected override void OnResume()
-        {
+            using var scope = Services.CreateScope();
+            var factory = Services.GetRequiredService<IDbContextFactory<SafeWarehouseContext>>();
+            using var dbContext = factory.CreateDbContext();
+            dbContext.Database.Migrate();   
         }
     }
 }

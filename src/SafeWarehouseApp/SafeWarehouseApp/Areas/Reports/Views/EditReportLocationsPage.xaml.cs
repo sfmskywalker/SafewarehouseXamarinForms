@@ -20,13 +20,13 @@ namespace SafeWarehouseApp.Areas.Reports.Views
         private long? _lastTouchId;
         private Location? _tappedLocation;
         private Location? _selectedLocation;
-        private readonly Timer _pressAndHoldTimer;
+        //private readonly Timer _pressAndHoldTimer;
         private bool _moveThresholdReached;
 
         public EditReportLocationsPage()
         {
             InitializeComponent();
-            _pressAndHoldTimer = new Timer(OnPressAndHoldTimeoutReached);
+            //_pressAndHoldTimer = new Timer(OnPressAndHoldTimeoutReached);
         }
 
         private EditReportLocationsViewModel ViewModel => (EditReportLocationsViewModel) BindingContext;
@@ -50,19 +50,19 @@ namespace SafeWarehouseApp.Areas.Reports.Views
             ViewModel.DrawSchematic(surface.Canvas, targetRect, _selectedLocation);
         }
 
-        private void OnPressAndHoldTimeoutReached(object state)
-        {
-            _moveThresholdReached = false;
-            
-            if (_tappedLocation == null)
-                return;
-
-            Device.BeginInvokeOnMainThread(() =>
-            {
-                ViewModel.ShowActionSheet.Execute(_tappedLocation);
-                CanvasView.InvalidateSurface();
-            });
-        }
+        // private void OnPressAndHoldTimeoutReached(object state)
+        // {
+        //     _moveThresholdReached = false;
+        //     
+        //     if (_tappedLocation == null)
+        //         return;
+        //
+        //     Device.BeginInvokeOnMainThread(() =>
+        //     {
+        //         ViewModel.ShowActionSheet.Execute(_tappedLocation);
+        //         CanvasView.InvalidateSurface();
+        //     });
+        // }
 
         private Location? GetLocation(SKPoint point) => ViewModel.Report?.Locations.FirstOrDefault(x => IsInsideCircle(point.ToFormsPoint(), new Point(x.Left, x.Top), x.Radius));
 
@@ -114,7 +114,10 @@ namespace SafeWarehouseApp.Areas.Reports.Views
                         var selectedLocation = GetLocation(point);
 
                         if (selectedLocation != null)
+                        {
                             _selectedLocation = selectedLocation;
+                            ViewModel.SelectedLocation = selectedLocation;
+                        }
 
                         CanvasView.InvalidateSurface();
                     }
@@ -126,7 +129,7 @@ namespace SafeWarehouseApp.Areas.Reports.Views
                     _lastTouchId = touchId;
                     _tappedLocation = tappedLocation;
                     _moveThresholdReached = false;
-                    _pressAndHoldTimer.Change(TimeSpan.FromMilliseconds(500), Timeout.InfiniteTimeSpan);
+                    //_pressAndHoldTimer.Change(TimeSpan.FromMilliseconds(500), Timeout.InfiniteTimeSpan);
                     break;
 
                 case TouchActionType.Moved:
@@ -196,8 +199,8 @@ namespace SafeWarehouseApp.Areas.Reports.Views
                         _touchDictionary[args.Id] = point;
                     }
 
-                    if (_moveThresholdReached)
-                        _pressAndHoldTimer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
+                    // if (_moveThresholdReached)
+                    //     _pressAndHoldTimer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
 
                     break;
 
@@ -206,9 +209,9 @@ namespace SafeWarehouseApp.Areas.Reports.Views
                     if (_touchDictionary.ContainsKey(args.Id))
                         _touchDictionary.Remove(args.Id);
 
-                    _pressAndHoldTimer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
+                    //_pressAndHoldTimer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
 
-                    Task.Run(() => ViewModel.SaveChanges.Execute(null));
+                    //Task.Run(() => ViewModel.SaveChanges.Execute(null));
 
                     break;
                 case TouchActionType.Cancelled:

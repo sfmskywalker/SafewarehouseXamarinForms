@@ -23,7 +23,6 @@
             <StackLayout>
                 <StackLayout Orientation="Horizontal">
                     <Label Text="Schades" FontSize="Medium"  />
-                    <Button Text="Schade Toevoegen" Command="{Binding AddDamageCommand}" HorizontalOptions="EndAndExpand" />
                 </StackLayout>
                 <ListView x:Name="DamagesListView"
                           ItemsSource="{Binding Damages}"
@@ -41,8 +40,10 @@
                         <behaviors:EventToCommandBehavior EventName="ItemTapped" Command="{Binding DamageSelected}" Converter="{StaticResource TappedItemConverter}" />
                     </ListView.Behaviors>
                 </ListView>
+                
             </StackLayout>
             <StackLayout Orientation="Horizontal" HorizontalOptions="End">
+                <Button Text="Schade Toevoegen" Command="{Binding AddDamageCommand}" HorizontalOptions="EndAndExpand" />
                 <Button Text="Opslaan" Command="{Binding SaveCommand}" HorizontalOptions="Fill" />
             </StackLayout>
         </StackLayout>

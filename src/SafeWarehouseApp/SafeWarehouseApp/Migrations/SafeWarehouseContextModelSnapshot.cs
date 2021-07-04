@@ -107,7 +107,6 @@ namespace SafeWarehouseApp.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("CustomerId")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("Date")

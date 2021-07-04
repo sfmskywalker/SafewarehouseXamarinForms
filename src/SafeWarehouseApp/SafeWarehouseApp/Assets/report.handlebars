@@ -44,7 +44,7 @@
     <!-- Damages overview -->
     <div class="page p-10">
         <h2 class="font-bold text-lg text-center uppercase mb-10">Overzicht</h2>
-        <table class="table-auto w-full">
+        <table class="table-auto w-full" style="border-collapse: separate;  border-spacing: 10px 20px;">
             {{#each Locations}}
                 <tr>
                     <td colspan="3" class="align-top">
@@ -54,21 +54,27 @@
                 </tr>
                 {{#each Damages}}
                     <tr class="auto-break">
-                        <td class="align-top">
-                            {{#if MainDamagePicture}}
-                                <img src="{{MainDamagePicture.PictureData}}" alt=""/>
+                        <td class="align-top text-left" style="width: 33%; background-color: lightgray;">
+                            {{#if MainDamagePictureThumbnail}}
+                                <img src="{{MainDamagePictureThumbnail.PictureData}}" alt=""/>
                             {{/if}}
                         </td>
-                        <td class="align-top">
+                        <td class="align-top text-left" style="width: 33%;">
                             <ul class="list-disc pl-5 align-top">
                                 {{#each RequiredMaterials}}
-                                    <li>{{this}}</li>
+                                    <li>{{Name}} x {{Quantity}}</li>
                                 {{/each}}
                             </ul>
                         </td>
-                        <td class="align-top">
+                        <td class="align-top text-left" style="width: 33%;">
                             <p><span class="font-bold">{{../Number}}.{{Number}}</span></p>
                             <p>{{DamageType}}</p>
+                            {{#if DamageDescription }}
+                                <p>{{ DamageDescription }}</p>
+                            {{/if}}
+                            {{#if MainDamagePictureThumbnail.Description }}
+                                <p>{{ MainDamagePictureThumbnail.Description }}</p>
+                            {{/if}}
                         </td>
                     </tr>
                 {{/each}}
@@ -79,7 +85,7 @@
     <!-- Damages details -->
     <div class="page p-10">
         <h2 class="font-bold text-lg text-center uppercase mb-10">Details</h2>
-        <table class="table-auto w-full">
+        <table class="table-auto w-full" style="border-collapse: separate;  border-spacing: 10px 20px;">
             {{#each Locations}}
                 <tr>
                     <td colspan="2" class="align-top">
@@ -92,14 +98,17 @@
                         <td colspan="2" class="align-top">
                             <p class="mt-10">Schade <span class="font-bold">{{../Number}}.{{Number}}</span></p>
                             <p>{{DamageType}}</p>
+                            {{#if DamageDescription }}
+                                <p>{{ DamageDescription }}</p>
+                            {{/if}}
                         </td>
                     </tr>
                     {{#each DamagePictures}}
                         <tr class="auto-break">
-                            <td class="align-top">
+                            <td class="align-top text-left" style="width: 50%; background-color: lightgray;">
                                 <img src="{{PictureData}}" alt=""/>
                             </td>
-                            <td class="align-top">
+                            <td class="align-top text-left" style="width: 50%;">
                                 <p><span class="font-bold">{{../../Number}}.{{../Number}}.{{Number}}</span></p>
                                 <p>{{Description}}</p>
                             </td>

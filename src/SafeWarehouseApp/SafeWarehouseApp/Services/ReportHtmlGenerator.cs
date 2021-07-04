@@ -30,13 +30,14 @@ namespace SafeWarehouseApp.Services
             var template = await AssetLoader.ReadAssetStream("report.handlebars").ReadStringAsync(cancellationToken);
             var damageTypes = (await _damageTypeStore.ListAsync(cancellationToken: cancellationToken)).ToDictionary(x => x.Id);
             var customers = (await _customerStore.ListAsync(cancellationToken: cancellationToken)).ToDictionary(x => x.Id);
-            var customer = customers.TryGet(report.CustomerId) ?? new Customer();
+            var customer = customers.TryGet(report.CustomerId!) ?? new Customer();
             var locations = report.Locations;
             var schematic = (await _mediaService.GetMediaItemAsync(report.PaintedSchematicMediaId!))!;
             var materials = (await _materialStore.ListAsync(cancellationToken: cancellationToken)).ToDictionary(x => x.Id);
 
             var requiredMaterials = locations
                 .SelectMany(location => location.Damages.SelectMany(damage => damage.RequiredMaterials))
+                .Where(x => !string.IsNullOrEmpty(x.MaterialId))
                 .GroupBy(x => x.MaterialId)
                 .Select(x => new RequiredMaterial
                 {
@@ -62,21 +63,41 @@ namespace SafeWarehouseApp.Services
                         Description = location.Description,
                         Damages = await Task.WhenAll(location.Damages.Select(async (damage, damageIndex) =>
                         {
+                            var damagePictureThumbnails = await Task.WhenAll(damage.Pictures.Select(async (damagePicture, damagePictureIndex) => new
+                            {
+                                Number = damagePictureIndex + 1,
+                                Description = damagePicture.Description,
+                                PictureData = await GetDataUrlAsync(damagePicture.PictureId, 200, 200)
+                            }).ToList());
+                            
                             var damagePictures = await Task.WhenAll(damage.Pictures.Select(async (damagePicture, damagePictureIndex) => new
                             {
                                 Number = damagePictureIndex + 1,
                                 Description = damagePicture.Description,
-                                PictureData = await GetDataUrlAsync(damagePicture.PictureId, 300)
+                                PictureData = await GetDataUrlAsync(damagePicture.PictureId, 400)
                             }).ToList());
 
-                            var mainDamagePicture = damagePictures.FirstOrDefault();
-                            
+                            var mainDamagePictureThumbnail = damagePictureThumbnails.FirstOrDefault();
+
+                            var requiredMaterialShapes =
+                                from requiredMaterial in damage.RequiredMaterials
+                                where !string.IsNullOrEmpty(requiredMaterial.MaterialId)
+                                let material = materials.TryGet(requiredMaterial.MaterialId)
+                                where material != null
+                                select new
+                                {
+                                    Name = material.Name,
+                                    Quantity = requiredMaterial.Quantity
+                                };
+
                             return new
                             {
                                 Number = damageIndex + 1,
-                                DamageType = damageTypes.TryGet(damage.DamageTypeId)?.Name ?? "(onbekend)",
-                                RequiredMaterials = damage.RequiredMaterials.Where(x => !string.IsNullOrEmpty(x.MaterialId)).Select(x => materials.TryGet(x.MaterialId)).Where(x => x != null).Select(x => x!.Name).ToList(),
-                                MainDamagePicture = mainDamagePicture,
+                                DamageType = damageTypes.TryGet(damage.DamageTypeId!)?.Name ?? "(onbekend)",
+                                DamageDescription = damage.Description,
+                                RequiredMaterials = requiredMaterialShapes.ToList(),
+                                MainDamagePictureThumbnail = mainDamagePictureThumbnail,
+                                DamagePicturesThumbnails = damagePictureThumbnails,
                                 DamagePictures = damagePictures
                             };
                         }).ToList())
@@ -93,7 +114,7 @@ namespace SafeWarehouseApp.Services
             return compiledTemplate(model);
         }
         
-        private async Task<string?> GetDataUrlAsync(string? mediaItemId, int maxWidth)
+        private async Task<string?> GetDataUrlAsync(string? mediaItemId, int maxWidth, int? maxHeight = default)
         {
             var mediaItem = mediaItemId is not null and not "" ? await _mediaService.GetMediaItemAsync(mediaItemId) : default;
 
@@ -101,6 +122,10 @@ namespace SafeWarehouseApp.Services
                 return null;
             
             var scaledBitmap = _mediaService.GetResizedImage(mediaItem, maxWidth);
+
+            if (maxHeight != null)
+                scaledBitmap = scaledBitmap.ResizeMaxHeight(maxHeight.Value);
+            
             var data = scaledBitmap.Encode(SKEncodedImageFormat.Jpeg, 100);
             return data.ToArray().GetDataUrl(mediaItem.ContentType);
         }

@@ -25,6 +25,7 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
         private string _damageId = default!;
         private Damage _damage = default!;
         private DamageType? _damageType;
+        private string? _description = default!;
         private Report _report = default!;
         private Location _location = default!;
 
@@ -90,6 +91,12 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
             get => _damageType;
             set => SetProperty(ref _damageType, value);
         }
+        
+        public string? Description
+        {
+            get => _description;
+            set => SetProperty(ref _description, value);
+        }
 
         private IActionSheetService ActionSheetService => GetService<IActionSheetService>();
 
@@ -111,6 +118,7 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
             SelectedDamageType = DamageTypes.FirstOrDefault(x => x.Id == _damage.DamageTypeId);
             RequiredMaterials.SetItems(_damage.RequiredMaterials);
             DamagePictures.SetItems(_damage.Pictures.Select(x => new DamagePictureViewModel(x.Number, x.PictureId, x.Description)));
+            Description = _damage.Description;
         }
 
         private async void LoadDamageTypesAsync()
@@ -122,9 +130,9 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
         private async void LoadMaterialsAsync()
         {
             var customerId = _report.CustomerId;
-            var customer = (await CustomerStore.FindAsync(customerId))!;
-            var supplierIds = customer.Suppliers;
-            var materials = await MaterialStore.FindManyAsync(x => supplierIds.Contains(x.SupplierId));
+            var customer = customerId != null ? (await CustomerStore.FindAsync(customerId))! : default;
+            var supplierIds = customer?.Suppliers;
+            var materials = supplierIds != null ? await MaterialStore.FindManyAsync(x => supplierIds.Contains(x.SupplierId)) : await MaterialStore.ListAsync();
             Materials = materials.OrderBy(x => x.Name).ToList();
             MaterialIds.SetItems(Materials.Select(x => x.Id));
         }
@@ -215,6 +223,7 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
             _damage.RequiredMaterials = RequiredMaterials.ToList();
             _damage.Pictures = DamagePictures.Select(x => x.ToModel()).ToList();
             _damage.DamageTypeId = SelectedDamageType?.Id;
+            _damage.Description = Description?.Trim();
             await ReportStore.SaveAsync(_report);
             await CloseAsync();
         }

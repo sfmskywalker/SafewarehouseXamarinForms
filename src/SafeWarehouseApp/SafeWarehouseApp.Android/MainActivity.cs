@@ -35,6 +35,7 @@ namespace SafeWarehouseApp.Droid
             var serviceProvider = services.BuildServiceProvider();
             App.Services = serviceProvider;
 
+            app.BeforeStart();
             LoadApplication(app);
         }
 

@@ -66,7 +66,7 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
         {
             IsBusy = true;
 
-            if (CustomerId != null) 
+            if (CustomerId != null)
                 LoadCustomerAsync(_customerId);
         }
 
@@ -81,11 +81,11 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
 
                 var query =
                     from report in reports
-                    let customer = customers[report.CustomerId]
+                    let customer = customers.TryGet(report.CustomerId) ?? new Customer {CompanyName = "-", Id = "-"}
                     orderby customer.CompanyName
                     select (report, customer);
 
-                var groups = query.GroupBy(x => x.customer, x => x.report).ToList();
+                var groups = query.GroupBy(x => x.customer!, x => x.report).ToList();
                 Groups.SetItems(groups);
                 FilteredGroups.SetItems(_customer != null ? reports.Where(x => x.CustomerId == _customer.Id).GroupBy(x => _customer) : groups);
             }

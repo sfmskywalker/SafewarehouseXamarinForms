@@ -8,9 +8,18 @@ namespace SafeWarehouseApp.Extensions
         {
             if (bitmap.Width <= maxWidth)
                 return bitmap;
-            
-            var scale = maxWidth / (float)bitmap.Width;
+
+            var scale = maxWidth / (float) bitmap.Width;
             return bitmap.Resize(new SKSizeI(maxWidth, (int) (bitmap.Height * scale)), SKFilterQuality.High);
+        }
+
+        public static SKBitmap ResizeMaxHeight(this SKBitmap bitmap, int maxHeight)
+        {
+            if (bitmap.Height <= maxHeight)
+                return bitmap;
+
+            var scale = maxHeight / (float) bitmap.Height;
+            return bitmap.Resize(new SKSizeI((int) (bitmap.Width * scale), maxHeight), SKFilterQuality.High);
         }
     }
 }

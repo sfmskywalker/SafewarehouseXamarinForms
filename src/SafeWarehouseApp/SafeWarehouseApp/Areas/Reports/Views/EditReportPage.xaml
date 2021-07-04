@@ -8,6 +8,8 @@
             android:TabbedPage.IsSwipePagingEnabled="False"
             Title="Rapport">
     <TabbedPage.ToolbarItems>
+        <ToolbarItem Text="Locatie Verwijderen" Command="{Binding EditReportLocationsViewModel.DeleteLocation}" />
+        <ToolbarItem Text="Locatie Toevoegen" Command="{Binding EditReportLocationsViewModel.NewLocation}" />
         <ToolbarItem Text="PDF" Command="{Binding CreatePdfCommand}" />
     </TabbedPage.ToolbarItems>
     <TabbedPage.Children>

@@ -14,12 +14,15 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
         private string _schematicImagePath = default!;
         private SKBitmap? _schematicBitmap;
         private SKRectI? _rect;
+        private Location? _selectedLocation;
 
         public EditReportLocationsViewModel()
         {
             AddLocation = new Command<Point>(OnAddLocationAsync);
+            NewLocation = new Command(OnNewLocation);
             EditLocation = new Command<Location>(OnEditLocationAsync);
-            ShowActionSheet = new Command<Location>(OnShowActionSheet);
+            DeleteLocation = new Command(OnDeleteLocation, () => SelectedLocation != null);
+            //ShowActionSheet = new Command<Location>(OnShowActionSheet);
             SaveChanges = new Command(OnSaveChangesAsync);
         }
 
@@ -38,10 +41,22 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
             get => _schematicImagePath;
             set => SetProperty(ref _schematicImagePath, value);
         }
+        
+        public Location? SelectedLocation
+        {
+            get => _selectedLocation;
+            set
+            {
+                SetProperty(ref _selectedLocation, value);
+                DeleteLocation.ChangeCanExecute();
+            }
+        }
 
         public Command<Point> AddLocation { get; }
+        public Command NewLocation { get; }
         public Command<Location> EditLocation { get; }
-        public Command<Location> ShowActionSheet { get; set; }
+        public Command DeleteLocation { get; }
+        //public Command<Location> ShowActionSheet { get; set; }
         public Command SaveChanges { get; }
         public Func<Size> DimensionProvider { get; set; } = () => Size.Zero;
 
@@ -80,7 +95,6 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
             foreach (var location in reportLocations)
             {
                 var fillColor = location == selectedLocation ? SKColors.LimeGreen : SKColors.HotPink;
-                var strokeColor = fillColor;
 
                 using var circlePaint = new SKPaint
                 {
@@ -131,32 +145,61 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
                 Left = (int) position.X,
                 Top = (int) position.Y,
                 Radius = 100,
-                Number = Report!.Locations.Count + 1
+                Number = Report.Locations.Count + 1
             };
 
             Report.Locations.Add(location);
             await ReportStore.UpdateAsync(Report);
+            Report.UpdateLocationNumbers();
+            SelectedLocation = location;
             OnEditLocationAsync(location);
+        }
+        
+        private async void OnNewLocation()
+        {
+            var location = new Location
+            {
+                Id = Guid.NewGuid().ToString("N"),
+                Left = 100,
+                Top = 100,
+                Radius = 100,
+                Number = Report.Locations.Count + 1
+            };
+
+            Report.Locations.Add(location);
+            Report.UpdateLocationNumbers();
+            SelectedLocation = location;
+            await ReportStore.UpdateAsync(Report);
+            OnPropertyChanged(nameof(Report));
         }
 
         private async void OnEditLocationAsync(Location location)
         {
             await Shell.Current.GoToAsync($"{nameof(EditLocationPage)}?{nameof(EditLocationViewModel.ReportId)}={Report.Id}&{nameof(EditLocationViewModel.LocationId)}={location.Id}", true);
         }
-
-        private async void OnShowActionSheet(Location location)
+        
+        private void OnDeleteLocation()
         {
-            var cancelAction = "Annuleren";
-            var deleteAction = "Verwijderen";
-            var action = await GetService<IActionSheetService>().ShowActionSheet($"Locatie {location.Number}", cancelAction, deleteAction);
-
-            if (action == deleteAction)
-            {
-                Report.Locations.Remove(location);
-                SaveChanges.Execute(null);
-                OnPropertyChanged(nameof(Report));
-            }
+            Report.Locations.Remove(SelectedLocation!);
+            Report.UpdateLocationNumbers();
+            SaveChanges.Execute(null);
+            SelectedLocation = null;
+            OnPropertyChanged(nameof(Report));
         }
+
+        // private async void OnShowActionSheet(Location location)
+        // {
+        //     var cancelAction = "Annuleren";
+        //     var deleteAction = "Verwijderen";
+        //     var action = await GetService<IActionSheetService>().ShowActionSheet($"Locatie {location.Number}", cancelAction, deleteAction);
+        //
+        //     if (action == deleteAction)
+        //     {
+        //         Report.Locations.Remove(location);
+        //         SaveChanges.Execute(null);
+        //         OnPropertyChanged(nameof(Report));
+        //     }
+        // }
 
         private async void OnSaveChangesAsync() => await ReportStore.UpdateAsync(Report);
     }

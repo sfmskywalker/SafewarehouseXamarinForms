@@ -90,8 +90,24 @@ namespace SafeWarehouseApp.Areas.Reports.ViewModels
         {
             var damages = location.Damages;
             var damageTypes = (await DamageTypeStore.ListAsync()).ToDictionary(x => x.Id);
-            string GetDamageTypeName(string? damageTypeId) => damageTypeId == null ? "" : damageTypes.TryGet(damageTypeId)?.Name ?? "";
-            var models = damages.Select(x => new DamageSummaryViewModel(x.Id, x.Number, GetDamageTypeName(x.DamageTypeId))).ToList();
+            
+            string GetDamageTitle(Damage damage)
+            {
+                if(damage.DamageTypeId == null)
+                    return damage.Description ?? "";
+                
+                var damageType = damageTypes.TryGet(damage.DamageTypeId);
+                
+                if (damageType == null)
+                    return damage.Description ?? "";
+
+                if (string.IsNullOrWhiteSpace(damage.Description))
+                    return damageType.Name;
+
+                return $"{damageType.Name}. {damage.Description}";
+            }
+
+            var models = damages.Select(x => new DamageSummaryViewModel(x.Id, x.Number, GetDamageTitle(x))).ToList();
             Damages.SetItems(models);
         }
 
